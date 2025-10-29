@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
-import { selectItemsByParent } from '../../features/files/fileSlice';
-import FileItem from './FileItem/FileItem';
+import { selectItemsByParent } from '../../features/files/fileSelector';
+import FileItem from '../FileItem/FileItem';
 import { useState } from 'react';
 import FileTree from './FileTree';
 

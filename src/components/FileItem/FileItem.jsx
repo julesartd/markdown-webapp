@@ -5,10 +5,10 @@ import {
   renameItem,
   setCurrentFile,
   setCurrentFolder,
-  selectCurrentFolderId,
   addFile,
   addFolder,
-} from '../../../features/files/fileSlice';
+} from '../../features/files/fileSlice';
+import { selectCurrentFolderId } from '../../features/files/fileSelector';
 import FileItemIcon from './FileItemIcon';
 import FileItemName from './FileItemName';
 import FileItemMenu from './FileItemMenu';

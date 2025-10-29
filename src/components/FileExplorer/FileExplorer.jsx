@@ -2,10 +2,13 @@ import { useSelector, useDispatch } from 'react-redux';
 import {
   addFile,
   addFolder,
-  selectCurrentFolderId,
-  selectCurrentFolder,
   setCurrentFolder,
 } from '../../features/files/fileSlice';
+import {
+  selectCurrentFolderId,
+  selectCurrentFolder,
+} from '../../features/files/fileSelector';
+
 import FileTree from './FileTree';
 
 function FileExplorer() {

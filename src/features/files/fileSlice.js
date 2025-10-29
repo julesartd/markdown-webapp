@@ -1,4 +1,4 @@
-import { createSlice, createSelector } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import { v4 as uuidv4 } from 'uuid';
 
 const initialState = {
@@ -78,32 +78,5 @@ export const {
   setCurrentFile,
   setCurrentFolder,
 } = fileSlice.actions;
-
-const selectAllItems = (state) => state.files.items;
-
-export const selectFiles = (state) =>
-  state.files.items.filter((item) => item.type === 'file');
-
-export const selectFolders = (state) =>
-  state.files.items.filter((item) => item.type === 'folder');
-
-export const selectItemsByParent = createSelector(
-  [selectAllItems, (state, parentId) => parentId],
-  (items, parentId) => items.filter((item) => item.parentId === parentId)
-);
-
-export const selectCurrentFile = (state) => {
-  return state.files.items.find(
-    (item) => item.id === state.files.currentFileId && item.type === 'file'
-  );
-};
-
-export const selectCurrentFolder = (state) => {
-  return state.files.items.find(
-    (item) => item.id === state.files.currentFolderId && item.type === 'folder'
-  );
-};
-
-export const selectCurrentFolderId = (state) => state.files.currentFolderId;
 
 export default fileSlice.reducer;

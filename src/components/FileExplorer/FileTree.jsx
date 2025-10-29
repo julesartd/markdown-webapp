@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import { selectItemsByParent } from '../../features/files/fileSlice';
+import { selectItemsByParent } from '../../features/files/fileSelector';
 import FileTreeItem from './FileTreeItem';
 
 function FileTree({ parentId = null }) {
