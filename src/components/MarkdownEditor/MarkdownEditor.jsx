@@ -1,10 +1,11 @@
-import React, {useState, useEffect, useMemo} from 'react'; // 1. useRef et useMemo supprimés
+import {useState, useEffect, useMemo} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { updateFileContent } from '../../features/files/fileSlice';
 import { marked } from 'marked';
 import EditorPane from './EditorPane';
 import PreviewPane from './PreviewPane';
 import { selectCurrentFile } from '../../features/files/fileSelector.js';
+import DOMPurify from 'dompurify';
 
 function MarkdownEditor() {
     const dispatch = useDispatch();
@@ -37,12 +38,12 @@ function MarkdownEditor() {
         };
 
     }, [localContent, currentFile, dispatch]);
-
     
     const handleContentChange = (newContent) => {
         setLocalContent(newContent);
     };
-    const getHtml = currentFile ? marked.parse(localContent || '') : '';
+
+    const getHtml = currentFile ? DOMPurify.sanitize(marked.parse(localContent || '')) : '';
 
     const filePath = useMemo(() => {
         if (!currentFile || !allItems) return '';

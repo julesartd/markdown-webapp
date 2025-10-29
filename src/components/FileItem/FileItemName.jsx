@@ -7,6 +7,7 @@ function FileItemName({
   onRename,
   onCancelEdit,
   onClick,
+    isActiveFile,
 }) {
   if (isEditing) {
     return (
@@ -29,7 +30,8 @@ function FileItemName({
     <span
       className={`flex-1 text-sm truncate ${
         isActiveFolder ? 'font-semibold' : ''
-      }`}
+      }
+      ${isActiveFile ? 'font-semibold' : ''}`}
       onClick={onClick}
     >
       {item.name}
