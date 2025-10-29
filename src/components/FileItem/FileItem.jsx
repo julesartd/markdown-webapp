@@ -9,7 +9,7 @@ import {
   addFile,
   addFolder,
 } from '../../features/files/fileSlice';
-import { selectCurrentFolderId } from '../../features/files/fileSelector';
+import {selectCurrentFileId, selectCurrentFolderId} from '../../features/files/fileSelector';
 import FileItemIcon from './FileItemIcon';
 import FileItemName from './FileItemName';
 import FileItemMenu from './FileItemMenu';
@@ -18,11 +18,13 @@ import FileItemToggle from './FileItemToggle';
 function FileItem({ item, hasChildren, isExpanded, onToggleExpand }) {
   const dispatch = useDispatch();
   const currentFolderId = useSelector(selectCurrentFolderId);
+  const currentFileId = useSelector(selectCurrentFileId)
   const [isEditing, setIsEditing] = useState(false);
   const [newName, setNewName] = useState(item.name);
   const [showMenu, setShowMenu] = useState(false);
 
   const isActiveFolder = item.type === 'folder' && item.id === currentFolderId;
+  const isCurrentFile = item.type === 'file' && item.id === currentFileId;
 
   const handleClick = () => {
     if (item.type === 'file') {
@@ -74,7 +76,9 @@ function FileItem({ item, hasChildren, isExpanded, onToggleExpand }) {
       <div
         className={`flex items-center gap-1 px-2 py-1.5 rounded cursor-pointer group ${
           isActiveFolder ? 'bg-blue-100 hover:bg-blue-200' : 'hover:bg-gray-200'
-        }`}
+        }`
+            + (isCurrentFile ? ' text-blue-800' : '')
+      }
       >
         <FileItemToggle
           item={item}
@@ -88,6 +92,7 @@ function FileItem({ item, hasChildren, isExpanded, onToggleExpand }) {
           isExpanded={isExpanded}
           hasChildren={hasChildren}
           onClick={handleClick}
+          isActiveFile={isCurrentFile}
         />
 
         <FileItemName
