@@ -9,7 +9,7 @@ export const saveToLocalStorage = (key, data) => {
   try {
     localStorage.setItem(key, JSON.stringify(data));
   } catch (error) {
-    console.error(`Erreur de sauvegarde ${key}:`, error);
+    console.error(`Error saving to localStorage (${key}):`, error);
   }
 };
 
@@ -18,7 +18,7 @@ export const loadFromLocalStorage = (key, defaultValue = null) => {
     const data = localStorage.getItem(key);
     return data ? JSON.parse(data) : defaultValue;
   } catch (error) {
-    console.error(`Erreur de chargement ${key}:`, error);
+    console.error(`Error loading from localStorage (${key}):`, error);
     return defaultValue;
   }
 };
@@ -27,7 +27,7 @@ export const removeFromLocalStorage = (key) => {
   try {
     localStorage.removeItem(key);
   } catch (error) {
-    console.error(`Erreur de suppression ${key}:`, error);
+    console.error(`Error removing from localStorage (${key}):`, error);
   }
 };
 

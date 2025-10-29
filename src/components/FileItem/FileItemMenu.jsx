@@ -1,10 +1,4 @@
-import {
-  Edit2,
-  FilePlus,
-  FolderPlus,
-  Trash2,
-  MoreVertical,
-} from 'lucide-react';
+import { Edit2, FilePlus, FolderPlus, Trash2 } from 'lucide-react';
 
 function FileItemMenu({
   item,

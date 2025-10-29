@@ -62,24 +62,24 @@ export const fileSlice = createSlice({
       );
       if (file) {
         file.content = action.payload.content;
+        saveToLocalStorage(STORAGE_KEYS.FILES, state);
       }
-      saveToLocalStorage(STORAGE_KEYS.FILES, state);
     },
 
     renameItem: (state, action) => {
       const item = state.items.find((i) => i.id === action.payload.id);
       if (item) {
         item.name = action.payload.name;
+        saveToLocalStorage(STORAGE_KEYS.FILES, state);
       }
-      saveToLocalStorage(STORAGE_KEYS.FILES, state);
     },
 
     moveItem: (state, action) => {
       const item = state.items.find((i) => i.id === action.payload.id);
       if (item) {
         item.parentId = action.payload.newParentId;
+        saveToLocalStorage(STORAGE_KEYS.FILES, state);
       }
-      saveToLocalStorage(STORAGE_KEYS.FILES, state);
     },
 
     setCurrentFile: (state, action) => {
@@ -88,22 +88,23 @@ export const fileSlice = createSlice({
       );
       if (file) {
         state.currentFileId = action.payload;
+        saveToLocalStorage(STORAGE_KEYS.FILES, state);
       }
-      saveToLocalStorage(STORAGE_KEYS.FILES, state);
     },
 
     setCurrentFolder: (state, action) => {
       if (action.payload === null) {
         state.currentFolderId = null;
+        saveToLocalStorage(STORAGE_KEYS.FILES, state);
       } else {
         const folder = state.items.find(
           (item) => item.id === action.payload && item.type === 'folder'
         );
         if (folder) {
           state.currentFolderId = action.payload;
+          saveToLocalStorage(STORAGE_KEYS.FILES, state);
         }
       }
-      saveToLocalStorage(STORAGE_KEYS.FILES, state);
     },
   },
 });
