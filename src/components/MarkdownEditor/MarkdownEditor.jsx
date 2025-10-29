@@ -44,7 +44,7 @@ function MarkdownEditor() {
         setLocalContent(newContent);
     };
 
-    const getHtml = currentFile ? DOMPurify.sanitize(marked.parse(localContent || '')) : '';
+    const getHtml = currentFile ? marked.parse(localContent || '') : '';
 
     const handleExportMarkdown = () => {
         if (!currentFile) return;

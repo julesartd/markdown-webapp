@@ -1,4 +1,5 @@
 import React from 'react';
+import DOMPurify from "dompurify";
 
 function PreviewPane({ htmlContent }) {
     return (
@@ -9,7 +10,7 @@ function PreviewPane({ htmlContent }) {
             <div
                 className="flex-1 p-6 overflow-y-auto bg-white
                    prose prose-sm sm:prose-base max-w-none"
-                dangerouslySetInnerHTML={{ __html: htmlContent }}
+                dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(htmlContent) }}
             />
         </div>
     );
