@@ -25,4 +25,5 @@ function FileTreeItem({ item }) {
     </div>
   );
 }
+
 export default FileTreeItem;

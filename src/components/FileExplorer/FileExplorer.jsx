@@ -1,4 +1,5 @@
 import { useSelector, useDispatch } from 'react-redux';
+import { FilePlus, FolderPlus, X } from 'lucide-react';
 import {
   addFile,
   addFolder,
@@ -8,7 +9,6 @@ import {
   selectCurrentFolderId,
   selectCurrentFolder,
 } from '../../features/files/fileSelector';
-
 import FileTree from './FileTree';
 
 function FileExplorer() {
@@ -17,7 +17,6 @@ function FileExplorer() {
   const currentFolder = useSelector(selectCurrentFolder);
 
   const handleAddFile = () => {
-    console.log('Current Folder ID:', currentFolderId);
     dispatch(
       addFile({
         name: 'nouveau.md',
@@ -27,7 +26,6 @@ function FileExplorer() {
   };
 
   const handleAddFolder = () => {
-    console.log('Current Folder ID:', currentFolderId);
     dispatch(
       addFolder({
         name: 'nouveau-dossier',
@@ -48,15 +46,16 @@ function FileExplorer() {
         {currentFolder && (
           <div className="mb-3 px-3 py-2 bg-blue-50 border border-blue-200 rounded text-sm">
             <div className="flex items-center justify-between">
-              <span className="flex items-center gap-1">
-                📁 <span className="font-medium">{currentFolder.name}</span>
+              <span className="flex items-center gap-2">
+                <FolderPlus size={16} className="text-blue-600" />
+                <span className="font-medium">{currentFolder.name}</span>
               </span>
               <button
                 onClick={handleGoToRoot}
-                className="text-blue-600 hover:text-blue-800 text-xs"
+                className="text-blue-600 hover:text-blue-800 p-1 rounded hover:bg-blue-100"
                 title="Retour à la racine"
               >
-                ✕
+                <X size={16} />
               </button>
             </div>
           </div>
@@ -65,25 +64,27 @@ function FileExplorer() {
         <div className="flex gap-2">
           <button
             onClick={handleAddFile}
-            className="flex-1 px-3 py-2 text-sm border border-gray-300 bg-white rounded hover:bg-gray-100 transition"
+            className="flex-1 px-3 py-2 text-sm border border-gray-300 bg-white rounded hover:bg-gray-100 transition flex items-center justify-center gap-2"
             title={
               currentFolder
                 ? `Nouveau fichier dans ${currentFolder.name}`
                 : 'Nouveau fichier à la racine'
             }
           >
-            📄 Fichier
+            <FilePlus size={16} />
+            Fichier
           </button>
           <button
             onClick={handleAddFolder}
-            className="flex-1 px-3 py-2 text-sm border border-gray-300 bg-white rounded hover:bg-gray-100 transition"
+            className="flex-1 px-3 py-2 text-sm border border-gray-300 bg-white rounded hover:bg-gray-100 transition flex items-center justify-center gap-2"
             title={
               currentFolder
                 ? `Nouveau dossier dans ${currentFolder.name}`
                 : 'Nouveau dossier à la racine'
             }
           >
-            📁 Dossier
+            <FolderPlus size={16} />
+            Dossier
           </button>
         </div>
       </div>

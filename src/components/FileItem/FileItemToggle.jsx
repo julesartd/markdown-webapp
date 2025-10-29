@@ -1,19 +1,27 @@
-function FileItemToggle({ item, isExpanded, onToggle }) {
+import { ChevronRight, ChevronDown } from 'lucide-react';
+
+function FileItemToggle({ item, isExpanded, onToggle, hasChildren }) {
   if (item.type !== 'folder') return null;
 
   const handleClick = (e) => {
     e.stopPropagation();
-    if (onToggle) {
+    if (onToggle && hasChildren) {
       onToggle();
     }
   };
 
+  if (!hasChildren) {
+    return <span className="w-4" />;
+  }
+
+  const Icon = isExpanded ? ChevronDown : ChevronRight;
+
   return (
     <span
-      className="text-xs select-none w-4 hover:bg-gray-300 rounded flex items-center justify-center"
+      className="w-4 hover:bg-gray-300 rounded flex items-center justify-center cursor-pointer"
       onClick={handleClick}
     >
-      {isExpanded ? '▼' : '▶'}
+      <Icon size={14} className="text-gray-600" />
     </span>
   );
 }

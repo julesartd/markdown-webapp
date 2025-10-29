@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { MoreVertical } from 'lucide-react';
 import {
   removeItem,
   renameItem,
@@ -28,6 +29,9 @@ function FileItem({ item, hasChildren, isExpanded, onToggleExpand }) {
       dispatch(setCurrentFile(item.id));
     } else {
       dispatch(setCurrentFolder(item.id));
+      if (hasChildren && !isExpanded && onToggleExpand) {
+        onToggleExpand();
+      }
     }
   };
 
@@ -39,7 +43,11 @@ function FileItem({ item, hasChildren, isExpanded, onToggleExpand }) {
   };
 
   const handleDelete = () => {
-    if (confirm(`Supprimer "${item.name}" ?`)) {
+    const message = hasChildren
+      ? `⚠️ Supprimer "${item.name}" et tout son contenu ?`
+      : `Supprimer "${item.name}" ?`;
+
+    if (confirm(message)) {
       dispatch(removeItem(item.id));
     }
     setShowMenu(false);
@@ -72,11 +80,13 @@ function FileItem({ item, hasChildren, isExpanded, onToggleExpand }) {
           item={item}
           isExpanded={isExpanded}
           onToggle={onToggleExpand}
+          hasChildren={hasChildren}
         />
 
         <FileItemIcon
           item={item}
           isExpanded={isExpanded}
+          hasChildren={hasChildren}
           onClick={handleClick}
         />
 
@@ -92,18 +102,19 @@ function FileItem({ item, hasChildren, isExpanded, onToggleExpand }) {
         />
 
         <button
-          className="px-1 text-lg opacity-0 group-hover:opacity-100 transition-opacity"
+          className="p-1 opacity-0 group-hover:opacity-100 transition-opacity rounded hover:bg-gray-300"
           onClick={(e) => {
             e.stopPropagation();
             setShowMenu(!showMenu);
           }}
         >
-          ⋮
+          <MoreVertical size={16} className="text-gray-600" />
         </button>
 
         <FileItemMenu
           item={item}
           showMenu={showMenu}
+          hasChildren={hasChildren}
           onClose={() => setShowMenu(false)}
           onRename={() => {
             setIsEditing(true);
