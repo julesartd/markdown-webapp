@@ -75,11 +75,25 @@ export const fileSlice = createSlice({
     },
 
     moveItem: (state, action) => {
-      const item = state.items.find((i) => i.id === action.payload.id);
-      if (item) {
-        item.parentId = action.payload.newParentId;
-        saveToLocalStorage(STORAGE_KEYS.FILES, state);
+      const { itemId, newParentId } = action.payload;
+      const item = state.items.find((i) => i.id === itemId); // CORRECTION: state.items au lieu de state.files
+
+      if (!item) return;
+
+      // Vérifier qu'on ne déplace pas un dossier dans lui-même ou ses enfants
+      if (item.type === 'folder') {
+        let checkParent = newParentId;
+        while (checkParent) {
+          if (checkParent === itemId) return; // Empêcher la boucle
+          const parentItem = state.items.find((i) => i.id === checkParent);
+          checkParent = parentItem?.parentId;
+        }
       }
+
+      // Mettre à jour le parentId
+      item.parentId = newParentId || null;
+
+      saveToLocalStorage(STORAGE_KEYS.FILES, state);
     },
 
     setCurrentFile: (state, action) => {
