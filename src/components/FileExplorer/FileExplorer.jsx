@@ -8,11 +8,13 @@ import {
   updateFileContent,
 } from '../../features/files/fileSlice';
 import {
-  selectCurrentFolderId,
-  selectCurrentFolder,
+    selectCurrentFolderId,
+    selectCurrentFolder,
 } from '../../features/files/fileSelector';
 import { selectImageCount } from '../../features/images/imageSelector';
 import FileTree from '../FileTree/FileTree';
+import {useRef} from "react";
+import ImportButton from "../FileActions/ImportButton.jsx";
 
 function FileExplorer({ onOpenLibrary }) {
   const dispatch = useDispatch();
@@ -21,27 +23,33 @@ function FileExplorer({ onOpenLibrary }) {
   const imageCount = useSelector(selectImageCount);
   const importFileRef = useRef(null);
 
-  const handleAddFile = () => {
-    dispatch(
-      addFile({
-        name: 'nouveau.md',
-        parentId: currentFolderId,
-      })
-    );
-  };
+    const handleAddFolder = () => {
+        dispatch(
+            addFolder({
+                name: 'nouveau-dossier',
+                parentId: currentFolderId,
+            })
+        );
+    };
 
-  const handleAddFolder = () => {
-    dispatch(
-      addFolder({
-        name: 'nouveau-dossier',
-        parentId: currentFolderId,
-      })
-    );
-  };
+    const handleGoToRoot = () => {
+        dispatch(setCurrentFolder(null));
+    };
 
-  const handleGoToRoot = () => {
-    dispatch(setCurrentFolder(null));
-  };
+    const handleFileImported = ({ name, content }) => {
+        dispatch(
+            addFile({
+                name,
+                content,
+                parentId: currentFolderId,
+            })
+        );
+    };
+
+    return (
+        <div className="w-fit h-screen border-r border-gray-300 bg-gray-50 flex flex-col">
+            <div className="p-4 border-b border-gray-300 bg-white">
+                <h2 className="text-xl font-semibold mb-3">Explorateur</h2>
 
   // Importer un fichier .md
   const handleImportFile = (event) => {
@@ -82,23 +90,40 @@ function FileExplorer({ onOpenLibrary }) {
       <div className="p-4 border-b border-gray-300 bg-white">
         <h2 className="text-xl font-semibold mb-3">Explorateur</h2>
 
-        {currentFolder && (
-          <div className="mb-3 px-3 py-2 bg-blue-50 border border-blue-200 rounded text-sm">
-            <div className="flex items-center justify-between">
-              <span className="flex items-center gap-2">
-                <FolderPlus size={16} className="text-blue-600" />
-                <span className="font-medium">{currentFolder.name}</span>
-              </span>
-              <button
-                onClick={handleGoToRoot}
-                className="text-blue-600 hover:text-blue-800 p-1 rounded hover:bg-blue-100"
-                title="Retour à la racine"
-              >
-                <X size={16} />
-              </button>
+                <div className="flex gap-3">
+                    <button
+                        onClick={handleAddFile}
+                        className="flex-1 px-3 py-2 text-sm border border-gray-300 bg-white rounded hover:bg-gray-100 transition flex items-center justify-center gap-2"
+                        title={
+                            currentFolder
+                                ? `Nouveau fichier dans ${currentFolder.name}`
+                                : 'Nouveau fichier à la racine'
+                        }
+                    >
+                        <FilePlus size={16}/>
+                        Fichier
+                    </button>
+                    <button
+                        onClick={handleAddFolder}
+                        className="flex-1 px-3 py-2 text-sm border border-gray-300 bg-white rounded hover:bg-gray-100 transition flex items-center justify-center gap-2"
+                        title={
+                            currentFolder
+                                ? `Nouveau dossier dans ${currentFolder.name}`
+                                : 'Nouveau dossier à la racine'
+                        }
+                    >
+                        <FolderPlus size={16}/>
+                        Dossier
+                    </button>
+                    <ImportButton
+                        onFileImported={handleFileImported}
+                        className="px-3 py-2 text-sm border border-gray-300 bg-white rounded hover:bg-gray-100 transition flex items-center justify-center gap-2"
+                        icon={<Upload size={16} />}
+                        text="Importer"
+                        title="Importer un fichier (.md)"
+                    />
+                </div>
             </div>
-          </div>
-        )}
 
         <div className="space-y-2">
           {/* Section: Créer */}
@@ -165,13 +190,7 @@ function FileExplorer({ onOpenLibrary }) {
             </button>
           </div>
         </div>
-      </div>
-
-      <div className="flex-1 overflow-y-auto p-2">
-        <FileTree parentId={null} />
-      </div>
-    </div>
-  );
+    );
 }
 
 export default FileExplorer;
