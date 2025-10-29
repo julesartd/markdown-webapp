@@ -10,8 +10,10 @@ import {
   selectCurrentFolder,
 } from '../../features/files/fileSelector';
 import FileTree from '../FileTree/FileTree';
+import { useNavigate } from "react-router-dom";
 
 function FileExplorer() {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const currentFolderId = useSelector(selectCurrentFolderId);
   const currentFolder = useSelector(selectCurrentFolder);
@@ -42,6 +44,12 @@ function FileExplorer() {
     <div className="w-80 h-screen border-r border-gray-300 bg-gray-50 flex flex-col">
       <div className="p-4 border-b border-gray-300 bg-white">
         <h2 className="text-xl font-semibold mb-3">Explorateur</h2>
+        <button
+              onClick={() => navigate('/blocks')}
+              className="w-full mb-3 px-3 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
+              >
+                Ouvrir la bibliothèque de blocs
+        </button>
 
         {currentFolder && (
           <div className="mb-3 px-3 py-2 bg-blue-50 border border-blue-200 rounded text-sm">
