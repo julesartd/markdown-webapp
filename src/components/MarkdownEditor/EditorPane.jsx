@@ -13,7 +13,7 @@ function EditorPane({ value, onContentChange, filePath,onExport }) {
                         onClick={onExport}
                         icon={<Download size={16} />}
                         text={null}
-                        className="p-1 hover:bg-gray-700 rounded transition flex-shrink-0"
+                        className="hover:bg-gray-700 rounded transition flex-shrink-0"
                         title="Exporter ce fichier"
                     />
                 )}
