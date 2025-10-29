@@ -1,16 +1,15 @@
-import React, { useState, useEffect, useMemo, useRef } from 'react'; // 1. Importer useRef
+import React, { useState, useEffect } from 'react'; // 1. useRef et useMemo supprimés
 import { useSelector, useDispatch } from 'react-redux';
-import {updateFileContent,} from '../../features/files/fileSlice';
+import { updateFileContent } from '../../features/files/fileSlice';
 import { marked } from 'marked';
 import EditorPane from './EditorPane';
 import PreviewPane from './PreviewPane';
-import {selectCurrentFile} from "../../features/files/fileSelector.js";
+import { selectCurrentFile } from '../../features/files/fileSelector.js';
 
 function MarkdownEditor() {
     const dispatch = useDispatch();
     const currentFile = useSelector(selectCurrentFile);
     const [localContent, setLocalContent] = useState('');
-    const debounceTimer = useRef(null);
 
     useEffect(() => {
         if (currentFile) {
@@ -18,32 +17,32 @@ function MarkdownEditor() {
         } else {
             setLocalContent('');
         }
-        if (debounceTimer.current) {
-            clearTimeout(debounceTimer.current);
-        }
-    }, [currentFile]);
+    }, [currentFile])
 
+    useEffect(() => {
+        if (!currentFile || localContent === currentFile.content) {
+            return;
+        }
+        const timer = setTimeout(() => {
+            dispatch(
+                updateFileContent({
+                    id: currentFile.id,
+                    content: localContent,
+                })
+            );
+        }, 300);
+        return () => {
+            clearTimeout(timer);
+        };
+
+    }, [localContent, currentFile, dispatch]);
+
+    
     const handleContentChange = (newContent) => {
         setLocalContent(newContent);
-        if (debounceTimer.current) {
-            clearTimeout(debounceTimer.current);
-        }
-        debounceTimer.current = setTimeout(() => {
-            if (currentFile && newContent !== currentFile.content) {
-                dispatch(
-                    updateFileContent({
-                        id: currentFile.id,
-                        content: newContent,
-                    })
-                );
-            }
-        }, 300);
     };
+    const getHtml = currentFile ? marked.parse(localContent || '') : '';
 
-    const getHtml = useMemo(() => {
-        if (!currentFile) return '';
-        return marked.parse(localContent || '');
-    }, [localContent, currentFile]);
     if (!currentFile) {
         return (
             <div className="flex-1 flex items-center justify-center bg-gray-100">
@@ -53,6 +52,7 @@ function MarkdownEditor() {
             </div>
         );
     }
+
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 flex-1 h-full overflow-y-auto">
             <EditorPane
