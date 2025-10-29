@@ -1,41 +1,22 @@
 import './App.css';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Images } from 'lucide-react';
 import FileExplorer from './components/FileExplorer/FileExplorer';
 import MarkdownEditor from './components/MarkdownEditor/MarkdownEditor';
 import ImageLibrary from './components/ImageLibrary/ImageLibrary';
 import { selectCurrentFile } from './features/files/fileSelector';
-import { selectImageCount } from './features/images/imageSelector';
 
 function App() {
   const currentFile = useSelector(selectCurrentFile);
-  const imageCount = useSelector(selectImageCount);
   const [showLibrary, setShowLibrary] = useState(false);
 
   return (
     <div className="flex h-screen overflow-hidden bg-gray-50">
-      <FileExplorer />
+      <FileExplorer onOpenLibrary={() => setShowLibrary(true)} />
 
-      <main className="flex-1 flex flex-col overflow-hidden bg-white relative">
-        {/* Bouton flottant pour ouvrir la bibliothèque */}
-        <button
-          onClick={() => setShowLibrary(!showLibrary)}
-          className={`absolute top-4 right-4 z-20 flex items-center gap-2 px-4 py-2 rounded-lg shadow-lg transition-all ${
-            showLibrary
-              ? 'bg-blue-600 text-white hover:bg-blue-700'
-              : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
-          }`}
-          title="Bibliothèque d'images"
-        >
-          <Images size={20} />
-          <span className="text-sm font-medium">
-            Bibliothèque {imageCount > 0 && `(${imageCount})`}
-          </span>
-        </button>
-
+      <main className="flex-1 flex flex-col overflow-hidden bg-white">
         {showLibrary ? (
-          <ImageLibrary />
+          <ImageLibrary onClose={() => setShowLibrary(false)} />
         ) : currentFile ? (
           <MarkdownEditor file={currentFile} />
         ) : (

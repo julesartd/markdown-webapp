@@ -73,10 +73,10 @@ export default function ImagePicker({ isOpen, onClose, onSelect }) {
               <div
                 key={image.id}
                 onClick={() => setSelectedImage(image)}
-                className={`relative cursor-pointer rounded-lg overflow-hidden border-2 transition-all ${
+                className={`group relative cursor-pointer rounded-lg overflow-hidden transition-all ${
                   selectedImage?.id === image.id
-                    ? 'border-blue-500 ring-2 ring-blue-200'
-                    : 'border-transparent hover:border-gray-300'
+                    ? 'ring-2 ring-blue-500'
+                    : 'hover:ring-2 hover:ring-gray-300'
                 }`}
               >
                 {/* Image */}
@@ -85,20 +85,19 @@ export default function ImagePicker({ isOpen, onClose, onSelect }) {
                     src={image.data}
                     alt={image.name}
                     className="w-full h-full object-cover"
+                    loading="lazy"
                   />
                 </div>
 
-                {/* Overlay au survol */}
-                <div className="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-40 transition-all flex items-center justify-center">
-                  <div className="opacity-0 hover:opacity-100 transition-opacity text-white text-center px-2">
-                    <p className="text-xs font-medium truncate mb-1">{image.name}</p>
-                    <p className="text-xs">{formatFileSize(image.size)}</p>
-                  </div>
+                {/* Info au bas */}
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <p className="text-xs font-medium text-white truncate">{image.name}</p>
+                  <p className="text-xs text-gray-300">{formatFileSize(image.size)}</p>
                 </div>
 
                 {/* Indicateur de sélection */}
                 {selectedImage?.id === image.id && (
-                  <div className="absolute top-2 right-2 bg-blue-500 text-white rounded-full p-1">
+                  <div className="absolute top-2 right-2 bg-blue-500 text-white rounded-full p-1 shadow-lg">
                     <svg
                       className="w-4 h-4"
                       fill="currentColor"

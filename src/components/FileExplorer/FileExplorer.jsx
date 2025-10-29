@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from 'react-redux';
-import { FilePlus, FolderPlus, X } from 'lucide-react';
+import { FilePlus, FolderPlus, X, Images } from 'lucide-react';
 import {
   addFile,
   addFolder,
@@ -9,12 +9,14 @@ import {
   selectCurrentFolderId,
   selectCurrentFolder,
 } from '../../features/files/fileSelector';
+import { selectImageCount } from '../../features/images/imageSelector';
 import FileTree from '../FileTree/FileTree';
 
-function FileExplorer() {
+function FileExplorer({ onOpenLibrary }) {
   const dispatch = useDispatch();
   const currentFolderId = useSelector(selectCurrentFolderId);
   const currentFolder = useSelector(selectCurrentFolder);
+  const imageCount = useSelector(selectImageCount);
 
   const handleAddFile = () => {
     dispatch(
@@ -61,30 +63,42 @@ function FileExplorer() {
           </div>
         )}
 
-        <div className="flex gap-2">
+        <div className="space-y-2">
+          <div className="flex gap-2">
+            <button
+              onClick={handleAddFile}
+              className="flex-1 px-3 py-2 text-sm border border-gray-300 bg-white rounded hover:bg-gray-100 transition flex items-center justify-center gap-2"
+              title={
+                currentFolder
+                  ? `Nouveau fichier dans ${currentFolder.name}`
+                  : 'Nouveau fichier à la racine'
+              }
+            >
+              <FilePlus size={16} />
+              Fichier
+            </button>
+            <button
+              onClick={handleAddFolder}
+              className="flex-1 px-3 py-2 text-sm border border-gray-300 bg-white rounded hover:bg-gray-100 transition flex items-center justify-center gap-2"
+              title={
+                currentFolder
+                  ? `Nouveau dossier dans ${currentFolder.name}`
+                  : 'Nouveau dossier à la racine'
+              }
+            >
+              <FolderPlus size={16} />
+              Dossier
+            </button>
+          </div>
+
+          {/* Bouton Bibliothèque */}
           <button
-            onClick={handleAddFile}
-            className="flex-1 px-3 py-2 text-sm border border-gray-300 bg-white rounded hover:bg-gray-100 transition flex items-center justify-center gap-2"
-            title={
-              currentFolder
-                ? `Nouveau fichier dans ${currentFolder.name}`
-                : 'Nouveau fichier à la racine'
-            }
+            onClick={onOpenLibrary}
+            className="w-full px-3 py-2 text-sm border border-blue-300 bg-blue-50 text-blue-700 rounded hover:bg-blue-100 transition flex items-center justify-center gap-2 font-medium"
+            title="Ouvrir la bibliothèque d'images"
           >
-            <FilePlus size={16} />
-            Fichier
-          </button>
-          <button
-            onClick={handleAddFolder}
-            className="flex-1 px-3 py-2 text-sm border border-gray-300 bg-white rounded hover:bg-gray-100 transition flex items-center justify-center gap-2"
-            title={
-              currentFolder
-                ? `Nouveau dossier dans ${currentFolder.name}`
-                : 'Nouveau dossier à la racine'
-            }
-          >
-            <FolderPlus size={16} />
-            Dossier
+            <Images size={16} />
+            Bibliothèque {imageCount > 0 && `(${imageCount})`}
           </button>
         </div>
       </div>

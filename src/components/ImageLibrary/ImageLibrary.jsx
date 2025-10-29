@@ -8,6 +8,7 @@ import {
   FolderOpen,
   CheckSquare,
   Square,
+  ArrowLeft,
 } from 'lucide-react';
 import {
   addImages,
@@ -37,8 +38,9 @@ import ConfirmModal from '../Modal/ConfirmModal';
 
 /**
  * Bibliothèque d'images principale
+ * @param {function} onClose - Callback pour fermer la bibliothèque
  */
-export default function ImageLibrary() {
+export default function ImageLibrary({ onClose }) {
   const dispatch = useDispatch();
   const images = useSelector(selectAllImages);
   const selectedIds = useSelector(selectSelectedImageIds);
@@ -135,11 +137,22 @@ export default function ImageLibrary() {
       {/* Header */}
       <div className="bg-white border-b border-gray-200 px-6 py-4">
         <div className="flex items-center justify-between mb-4">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">Bibliothèque d'images</h1>
-            <p className="text-sm text-gray-500 mt-1">
-              {imageCount} image{imageCount > 1 ? 's' : ''} • {formatFileSize(totalSize)}
-            </p>
+          <div className="flex items-center gap-4">
+            {onClose && (
+              <button
+                onClick={onClose}
+                className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-800 font-medium"
+              >
+                <ArrowLeft size={16} />
+                Retour
+              </button>
+            )}
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">Bibliothèque d'images</h1>
+              <p className="text-sm text-gray-500 mt-1">
+                {imageCount} image{imageCount > 1 ? 's' : ''} • {formatFileSize(totalSize)}
+              </p>
+            </div>
           </div>
 
           {/* Actions globales */}
