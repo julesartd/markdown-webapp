@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'; // 1. useRef et useMemo supprimés
+import React, {useState, useEffect, useMemo} from 'react'; // 1. useRef et useMemo supprimés
 import { useSelector, useDispatch } from 'react-redux';
 import { updateFileContent } from '../../features/files/fileSlice';
 import { marked } from 'marked';
@@ -10,6 +10,7 @@ function MarkdownEditor() {
     const dispatch = useDispatch();
     const currentFile = useSelector(selectCurrentFile);
     const [localContent, setLocalContent] = useState('');
+    const allItems = useSelector((state) => state.files.items);
 
     useEffect(() => {
         if (currentFile) {
@@ -43,6 +44,24 @@ function MarkdownEditor() {
     };
     const getHtml = currentFile ? marked.parse(localContent || '') : '';
 
+    const filePath = useMemo(() => {
+        if (!currentFile || !allItems) return '';
+        const itemsMap = new Map(allItems.map(item => [item.id, item]));
+        const pathParts = [currentFile.name];
+        let parentId = currentFile.parentId;
+        while (parentId) {
+            const parentFolder = itemsMap.get(parentId);
+            if (parentFolder) {
+                pathParts.unshift(parentFolder.name);
+                parentId = parentFolder.parentId;
+            } else {
+                parentId = null;
+            }
+        }
+        return pathParts.join('/');
+    }, [currentFile, allItems]);
+
+
     if (!currentFile) {
         return (
             <div className="flex-1 flex items-center justify-center bg-gray-100">
@@ -56,6 +75,7 @@ function MarkdownEditor() {
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 flex-1 h-full overflow-y-auto">
             <EditorPane
+                filePath={filePath}
                 value={localContent}
                 onContentChange={handleContentChange}
             />
