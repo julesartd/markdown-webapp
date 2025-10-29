@@ -39,6 +39,13 @@ export const fileSlice = createSlice({
         state.items = state.items.filter((item) => item.id !== id);
       };
       removeRecursive(action.payload);
+
+      if (state.currentFileId === action.payload) {
+        state.currentFileId = null;
+      }
+      if (state.currentFolderId === action.payload) {
+        state.currentFolderId = null;
+      }
     },
 
     updateFileContent: (state, action) => {
@@ -59,11 +66,25 @@ export const fileSlice = createSlice({
     },
 
     setCurrentFile: (state, action) => {
-      state.currentFileId = action.payload;
+      const file = state.items.find(
+        (item) => item.id === action.payload && item.type === 'file'
+      );
+      if (file) {
+        state.currentFileId = action.payload;
+      }
     },
 
     setCurrentFolder: (state, action) => {
-      state.currentFolderId = action.payload;
+      if (action.payload === null) {
+        state.currentFolderId = null;
+      } else {
+        const folder = state.items.find(
+          (item) => item.id === action.payload && item.type === 'folder'
+        );
+        if (folder) {
+          state.currentFolderId = action.payload;
+        }
+      }
     },
   },
 });

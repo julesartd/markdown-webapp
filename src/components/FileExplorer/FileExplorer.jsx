@@ -9,7 +9,7 @@ import {
   selectCurrentFolderId,
   selectCurrentFolder,
 } from '../../features/files/fileSelector';
-import FileTree from './FileTree';
+import FileTree from '../FileTree/FileTree';
 
 function FileExplorer() {
   const dispatch = useDispatch();

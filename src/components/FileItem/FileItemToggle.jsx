@@ -10,10 +10,6 @@ function FileItemToggle({ item, isExpanded, onToggle, hasChildren }) {
     }
   };
 
-  if (!hasChildren) {
-    return <span className="w-4" />;
-  }
-
   const Icon = isExpanded ? ChevronDown : ChevronRight;
 
   return (
