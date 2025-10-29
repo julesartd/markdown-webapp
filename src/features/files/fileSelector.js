@@ -1,6 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit';
 
-// Sélecteurs de base
 export const selectAllItems = (state) => state.files.items;
 
 export const selectCurrentFileId = (state) => state.files.currentFileId;
