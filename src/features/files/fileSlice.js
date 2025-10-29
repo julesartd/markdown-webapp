@@ -1,11 +1,16 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { v4 as uuidv4 } from 'uuid';
+import {
+  saveToLocalStorage,
+  loadFromLocalStorage,
+  STORAGE_KEYS,
+} from '../../utils/localStorage';
 
-const initialState = {
+const initialState = loadFromLocalStorage(STORAGE_KEYS.FILES, {
   items: [],
   currentFileId: null,
   currentFolderId: null,
-};
+});
 
 export const fileSlice = createSlice({
   name: 'files',
@@ -20,6 +25,7 @@ export const fileSlice = createSlice({
         parentId: action.payload.parentId || null,
         createdAt: new Date().toISOString(),
       });
+      saveToLocalStorage(STORAGE_KEYS.FILES, state);
     },
 
     addFolder: (state, action) => {
@@ -30,6 +36,7 @@ export const fileSlice = createSlice({
         parentId: action.payload.parentId || null,
         createdAt: new Date().toISOString(),
       });
+      saveToLocalStorage(STORAGE_KEYS.FILES, state);
     },
 
     removeItem: (state, action) => {
@@ -39,31 +46,64 @@ export const fileSlice = createSlice({
         state.items = state.items.filter((item) => item.id !== id);
       };
       removeRecursive(action.payload);
+
+      if (state.currentFileId === action.payload) {
+        state.currentFileId = null;
+      }
+      if (state.currentFolderId === action.payload) {
+        state.currentFolderId = null;
+      }
+      saveToLocalStorage(STORAGE_KEYS.FILES, state);
     },
 
     updateFileContent: (state, action) => {
       const file = state.items.find(
         (item) => item.id === action.payload.id && item.type === 'file'
       );
-      if (file) file.content = action.payload.content;
+      if (file) {
+        file.content = action.payload.content;
+      }
+      saveToLocalStorage(STORAGE_KEYS.FILES, state);
     },
 
     renameItem: (state, action) => {
       const item = state.items.find((i) => i.id === action.payload.id);
-      if (item) item.name = action.payload.name;
+      if (item) {
+        item.name = action.payload.name;
+      }
+      saveToLocalStorage(STORAGE_KEYS.FILES, state);
     },
 
     moveItem: (state, action) => {
       const item = state.items.find((i) => i.id === action.payload.id);
-      if (item) item.parentId = action.payload.newParentId;
+      if (item) {
+        item.parentId = action.payload.newParentId;
+      }
+      saveToLocalStorage(STORAGE_KEYS.FILES, state);
     },
 
     setCurrentFile: (state, action) => {
-      state.currentFileId = action.payload;
+      const file = state.items.find(
+        (item) => item.id === action.payload && item.type === 'file'
+      );
+      if (file) {
+        state.currentFileId = action.payload;
+      }
+      saveToLocalStorage(STORAGE_KEYS.FILES, state);
     },
 
     setCurrentFolder: (state, action) => {
-      state.currentFolderId = action.payload;
+      if (action.payload === null) {
+        state.currentFolderId = null;
+      } else {
+        const folder = state.items.find(
+          (item) => item.id === action.payload && item.type === 'folder'
+        );
+        if (folder) {
+          state.currentFolderId = action.payload;
+        }
+      }
+      saveToLocalStorage(STORAGE_KEYS.FILES, state);
     },
   },
 });

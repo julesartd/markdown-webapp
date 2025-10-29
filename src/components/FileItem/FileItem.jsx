@@ -44,7 +44,7 @@ function FileItem({ item, hasChildren, isExpanded, onToggleExpand }) {
 
   const handleDelete = () => {
     const message = hasChildren
-      ? `⚠️ Supprimer "${item.name}" et tout son contenu ?`
+      ? `Supprimer "${item.name}" et tout son contenu ?`
       : `Supprimer "${item.name}" ?`;
 
     if (confirm(message)) {
