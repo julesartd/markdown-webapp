@@ -6,6 +6,7 @@ import EditorPane from './EditorPane';
 import PreviewPane from './PreviewPane';
 import {selectAllItems, selectCurrentFile} from '../../features/files/fileSelector.js';
 import DOMPurify from 'dompurify';
+import {exportAsFile} from "../../utils/fileExport.js";
 
 function MarkdownEditor() {
     const dispatch = useDispatch();
@@ -45,6 +46,18 @@ function MarkdownEditor() {
 
     const getHtml = currentFile ? DOMPurify.sanitize(marked.parse(localContent || '')) : '';
 
+    const handleExportMarkdown = () => {
+        if (!currentFile) return;
+        const filename = currentFile.name.endsWith('.md')
+            ? currentFile.name
+            : `${currentFile.name}.md`;
+        exportAsFile(
+            localContent,
+            filename,
+            'text/markdown;charset=utf-8'
+        );
+    };
+
     const filePath = useMemo(() => {
         if (!currentFile || !allItems) return '';
         const itemsMap = new Map(allItems.map(item => [item.id, item]));
@@ -79,6 +92,7 @@ function MarkdownEditor() {
                 filePath={filePath}
                 value={localContent}
                 onContentChange={handleContentChange}
+                onExport={handleExportMarkdown}
             />
             <PreviewPane htmlContent={getHtml} />
         </div>
