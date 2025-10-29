@@ -4,14 +4,14 @@ import { updateFileContent } from '../../features/files/fileSlice';
 import { marked } from 'marked';
 import EditorPane from './EditorPane';
 import PreviewPane from './PreviewPane';
-import { selectCurrentFile } from '../../features/files/fileSelector.js';
+import {selectAllItems, selectCurrentFile} from '../../features/files/fileSelector.js';
 import DOMPurify from 'dompurify';
 
 function MarkdownEditor() {
     const dispatch = useDispatch();
     const currentFile = useSelector(selectCurrentFile);
     const [localContent, setLocalContent] = useState('');
-    const allItems = useSelector((state) => state.files.items);
+    const allItems = useSelector(selectAllItems);
 
     useEffect(() => {
         if (currentFile) {
