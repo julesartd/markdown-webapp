@@ -1,5 +1,5 @@
 import { useDispatch } from 'react-redux';
-import { FilePlus, FolderPlus, Images, FileUp } from 'lucide-react';
+import { FilePlus, FolderPlus, Images, FileUp, BookOpen } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { addFile, addFolder } from '../../features/files/fileSlice';
 
@@ -9,6 +9,7 @@ function FileExplorerActions({
   imageCount,
   importFileRef,
   onOpenLibrary,
+  onOpenLibraryBlock,
 }) {
   const dispatch = useDispatch();
 
@@ -108,6 +109,18 @@ function FileExplorerActions({
         >
           <Images size={16} /> Bibliothèque{' '}
           {imageCount > 0 && `(${imageCount})`}
+        </button>
+      </div>
+
+      {/* Bibliothèque de blocs */}
+      <div>
+        <button
+          onClick={onOpenLibraryBlock}
+          className="w-full px-3 py-2 text-sm border border-blue-300 bg-blue-50 text-blue-700 rounded hover:bg-blue-100 flex items-center gap-2 font-medium"
+          title="Ouvrir la bibliothèque de blocs"
+        >
+          <BookOpen size={16} />
+          Bibliothèque de blocs
         </button>
       </div>
     </div>

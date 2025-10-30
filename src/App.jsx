@@ -6,11 +6,13 @@ import FileExplorer from './components/FileExplorer/FileExplorer';
 import MarkdownEditor from './components/MarkdownEditor/MarkdownEditor';
 import ImageLibrary from './components/ImageLibrary/ImageLibrary';
 import { selectCurrentFile, selectCurrentFilePath } from './features/files/fileSelector';
+import BlockList from './blocks/components/BlockList';
 
 function App() {
   const currentFile = useSelector(selectCurrentFile);
   const currentFilePath = useSelector(selectCurrentFilePath);
   const [showLibrary, setShowLibrary] = useState(false);
+  const [showBlockLibrary, setShowBlockLibrary] = useState(false);
 
   // Fermer la bibliothèque quand un fichier est sélectionné
   const handleFileExplorerInteraction = () => {
@@ -69,11 +71,14 @@ function App() {
         <FileExplorer
           onOpenLibrary={() => setShowLibrary(true)}
           onFileSelect={handleFileExplorerInteraction}
+          onOpenLibraryBlock={() => setShowBlockLibrary(true)}
         />
 
         <main className="flex-1 flex flex-col overflow-hidden bg-white">
           {showLibrary ? (
             <ImageLibrary onClose={() => setShowLibrary(false)} />
+          ) : showBlockLibrary ? (
+            <BlockList onClose={() => setShowBlockLibrary(false)} />
           ) : currentFile ? (
             <MarkdownEditor file={currentFile} filePath={currentFilePath} />
           ) : (

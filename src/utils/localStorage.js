@@ -1,7 +1,7 @@
 const STORAGE_KEYS = {
   FILES: 'mdlc_files',
   IMAGES: 'mdlc_images',
-  //   BLOCKS: 'mdlc_blocks',
+  BLOCKS: 'mdlc_blocks',
   //   PREFERENCES: 'mdlc_preferences',
 };
 

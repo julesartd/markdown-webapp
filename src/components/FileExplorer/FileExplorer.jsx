@@ -11,7 +11,7 @@ import FileExplorerHeader from './FileExplorerHeader';
 import FileExplorerActions from './FileExplorerActions';
 import FileExplorerTree from './FileExplorerTree';
 
-function FileExplorer({ onOpenLibrary, onFileSelect }) {
+function FileExplorer({ onOpenLibrary, onFileSelect, onOpenLibraryBlock }) {
   const dispatch = useDispatch();
   const currentFolderId = useSelector(selectCurrentFolderId);
   const currentFolder = useSelector(selectCurrentFolder);
@@ -33,6 +33,7 @@ function FileExplorer({ onOpenLibrary, onFileSelect }) {
         imageCount={imageCount}
         importFileRef={importFileRef}
         onOpenLibrary={onOpenLibrary}
+        onOpenLibraryBlock={onOpenLibraryBlock}
       />
       <FileExplorerTree dragAndDrop={dragAndDrop} onFileSelect={onFileSelect} />
     </div>
