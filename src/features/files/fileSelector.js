@@ -40,3 +40,27 @@ export const selectCurrentFolder = createSelector(
   (items, currentFolderId) =>
     items.find((item) => item.id === currentFolderId && item.type === 'folder')
 );
+
+// Fonction utilitaire pour construire le chemin complet d'un fichier
+const buildFilePath = (items, file) => {
+  if (!file) return '';
+
+  const pathParts = [file.name];
+  let currentItem = file;
+
+  // Remonter la hiérarchie en suivant les parentId
+  while (currentItem.parentId) {
+    const parent = items.find((item) => item.id === currentItem.parentId);
+    if (!parent) break;
+    pathParts.unshift(parent.name);
+    currentItem = parent;
+  }
+
+  return pathParts.join('/');
+};
+
+// Selector pour obtenir le chemin complet du fichier actuel
+export const selectCurrentFilePath = createSelector(
+  [selectAllItems, selectCurrentFile],
+  (items, currentFile) => buildFilePath(items, currentFile)
+);

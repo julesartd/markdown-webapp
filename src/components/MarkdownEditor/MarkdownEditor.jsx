@@ -1,102 +1,179 @@
-import {useState, useEffect, useMemo} from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useState, useRef, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { ImagePlus, FileUp, Download } from 'lucide-react';
 import { updateFileContent } from '../../features/files/fileSlice';
-import { marked } from 'marked';
-import EditorPane from './EditorPane';
-import PreviewPane from './PreviewPane';
-import {selectAllItems, selectCurrentFile} from '../../features/files/fileSelector.js';
-import DOMPurify from 'dompurify';
-import {exportAsFile} from "../../utils/fileExport.js";
+import MarkdownPreview from './MarkdownPreview';
+import ImagePicker from '../ImageLibrary/ImagePicker';
 
-function MarkdownEditor() {
-    const dispatch = useDispatch();
-    const currentFile = useSelector(selectCurrentFile);
-    const [localContent, setLocalContent] = useState('');
-    const allItems = useSelector(selectAllItems);
+/**
+ * Éditeur Markdown avec support d'images et prévisualisation côte à côte
+ * @param {Object} file - Fichier en cours d'édition
+ * @param {string} filePath - Chemin complet du fichier
+ */
+export default function MarkdownEditor({ file, filePath }) {
+  const dispatch = useDispatch();
+  const [content, setContent] = useState(file.content || '');
+  const [showImagePicker, setShowImagePicker] = useState(false);
+  const textareaRef = useRef(null);
+  const importFileRef = useRef(null);
 
-    useEffect(() => {
-        if (currentFile) {
-            setLocalContent(currentFile.content);
-        } else {
-            setLocalContent('');
-        }
-    }, [currentFile])
+  // Mettre à jour le contenu local quand on change de fichier
+  useEffect(() => {
+    setContent(file.content || '');
+  }, [file.id, file.content]);
 
-    useEffect(() => {
-        if (!currentFile || localContent === currentFile.content) {
-            return;
-        }
-        const timer = setTimeout(() => {
-            dispatch(
-                updateFileContent({
-                    id: currentFile.id,
-                    content: localContent,
-                })
-            );
-        }, 300);
-        return () => {
-            clearTimeout(timer);
-        };
+  // Sauvegarder le contenu dans Redux
+  const handleContentChange = (newContent) => {
+    setContent(newContent);
+    dispatch(updateFileContent({ id: file.id, content: newContent }));
+  };
 
-    }, [localContent, currentFile, dispatch]);
-    
-    const handleContentChange = (newContent) => {
-        setLocalContent(newContent);
-    };
+  // Insérer une image depuis la bibliothèque
+  const handleSelectFromLibrary = (image) => {
+    insertImageIntoEditor(image.id, image.name);
+  };
 
-    const getHtml = currentFile ? marked.parse(localContent || '') : '';
+  // Helper pour insérer l'image dans l'éditeur
+  const insertImageIntoEditor = (imageId, imageName) => {
+    const textarea = textareaRef.current;
+    const cursorPos = textarea?.selectionStart || content.length;
+    const imageMarkdown = `![${imageName}](${imageId})`;
 
-    const handleExportMarkdown = () => {
-        if (!currentFile) return;
-        const filename = currentFile.name.endsWith('.md')
-            ? currentFile.name
-            : `${currentFile.name}.md`;
-        exportAsFile(
-            localContent,
-            filename,
-            'text/markdown;charset=utf-8'
-        );
-    };
+    const newContent =
+      content.slice(0, cursorPos) +
+      imageMarkdown +
+      content.slice(cursorPos);
 
-    const filePath = useMemo(() => {
-        if (!currentFile || !allItems) return '';
-        const itemsMap = new Map(allItems.map(item => [item.id, item]));
-        const pathParts = [currentFile.name];
-        let parentId = currentFile.parentId;
-        while (parentId) {
-            const parentFolder = itemsMap.get(parentId);
-            if (parentFolder) {
-                pathParts.unshift(parentFolder.name);
-                parentId = parentFolder.parentId;
-            } else {
-                parentId = null;
-            }
-        }
-        return pathParts.join('/');
-    }, [currentFile, allItems]);
+    handleContentChange(newContent);
 
+    // Replacer le curseur après l'image insérée
+    setTimeout(() => {
+      if (textarea) {
+        textarea.focus();
+        const newPos = cursorPos + imageMarkdown.length;
+        textarea.setSelectionRange(newPos, newPos);
+      }
+    }, 0);
+  };
 
-    if (!currentFile) {
-        return (
-            <div className="flex-1 flex items-center justify-center bg-gray-100">
-                <p className="text-gray-500">
-                    Sélectionnez un fichier pour commencer l'édition.
-                </p>
-            </div>
-        );
+  // Importer un fichier .md
+  const handleImportFile = (event) => {
+    const uploadedFile = event.target.files?.[0];
+    if (!uploadedFile) return;
+
+    if (!uploadedFile.name.endsWith('.md')) {
+      alert('Veuillez sélectionner un fichier Markdown (.md)');
+      return;
     }
 
-    return (
-        <div className="grid grid-cols-1 md:grid-cols-2 flex-1 h-full overflow-y-auto">
-            <EditorPane
-                filePath={filePath}
-                value={localContent}
-                onContentChange={handleContentChange}
-                onExport={handleExportMarkdown}
-            />
-            <PreviewPane htmlContent={getHtml} />
-        </div>
-    );
-}
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const fileContent = e.target.result;
+      handleContentChange(fileContent);
+    };
+    reader.onerror = () => {
+      alert('Erreur lors de la lecture du fichier');
+    };
+    reader.readAsText(uploadedFile);
 
-export default MarkdownEditor;
+    // Reset input
+    if (importFileRef.current) {
+      importFileRef.current.value = '';
+    }
+  };
+
+  // Exporter le fichier en .md
+  const handleExportFile = () => {
+    const blob = new Blob([content], { type: 'text/markdown;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = file.name;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
+  return (
+    <div className="flex flex-col h-full">
+      {/* Barre d'outils */}
+      <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 bg-gray-50">
+        <div className="flex items-center gap-2">
+          <h2 className="text-sm font-semibold text-gray-700">{filePath || file.name}</h2>
+        </div>
+      </div>
+
+      {/* Vue côte à côte : Éditeur + Prévisualisation */}
+      <div className="flex-1 flex overflow-hidden">
+        {/* Éditeur (gauche) */}
+        <div className="flex-1 border-r border-gray-200 overflow-hidden">
+          <div className="h-full flex flex-col">
+            <div className="px-4 py-2 bg-gray-50 border-b border-gray-200 flex items-center justify-between">
+              <h3 className="text-xs font-semibold text-gray-500 uppercase">Édition</h3>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => importFileRef.current?.click()}
+                  className="flex items-center gap-1.5 px-2 py-1 text-xs font-medium text-gray-600 bg-white border border-gray-300 rounded hover:bg-gray-100 transition-colors"
+                  title="Importer un fichier .md"
+                >
+                  <FileUp size={14} />
+                  Importer
+                </button>
+                <button
+                  onClick={() => setShowImagePicker(true)}
+                  className="flex items-center gap-1.5 px-2 py-1 text-xs font-medium text-blue-600 bg-blue-50 border border-blue-200 rounded hover:bg-blue-100 transition-colors"
+                  title="Insérer une image"
+                >
+                  <ImagePlus size={14} />
+                  Image
+                </button>
+              </div>
+            </div>
+
+            {/* Input file caché pour import */}
+            <input
+              ref={importFileRef}
+              type="file"
+              accept=".md"
+              onChange={handleImportFile}
+              className="hidden"
+            />
+            <textarea
+              ref={textareaRef}
+              value={content}
+              onChange={(e) => handleContentChange(e.target.value)}
+              className="flex-1 w-full px-4 py-3 resize-none focus:outline-none font-mono text-sm leading-relaxed"
+              placeholder="Écrivez votre contenu en Markdown..."
+            />
+          </div>
+        </div>
+
+        {/* Prévisualisation (droite) */}
+        <div className="flex-1 overflow-hidden">
+          <div className="h-full flex flex-col">
+            <div className="px-4 py-2 bg-gray-50 border-b border-gray-200 flex items-center justify-between">
+              <h3 className="text-xs font-semibold text-gray-500 uppercase">Aperçu</h3>
+              <button
+                onClick={handleExportFile}
+                className="flex items-center gap-1.5 px-2 py-1 text-xs font-medium text-green-600 bg-green-50 border border-green-200 rounded hover:bg-green-100 transition-colors"
+                title="Exporter en fichier .md"
+              >
+                <Download size={14} />
+                Exporter
+              </button>
+            </div>
+            <MarkdownPreview content={content} />
+          </div>
+        </div>
+      </div>
+
+      {/* Modal de sélection d'image */}
+      <ImagePicker
+        isOpen={showImagePicker}
+        onClose={() => setShowImagePicker(false)}
+        onSelect={handleSelectFromLibrary}
+      />
+    </div>
+  );
+}
