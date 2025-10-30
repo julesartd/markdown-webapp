@@ -11,9 +11,19 @@ function App() {
   const currentFilePath = useSelector(selectCurrentFilePath);
   const [showLibrary, setShowLibrary] = useState(false);
 
+  // Fermer la bibliothèque quand un fichier est sélectionné
+  const handleFileExplorerInteraction = () => {
+    if (showLibrary) {
+      setShowLibrary(false);
+    }
+  };
+
   return (
     <div className="flex h-screen overflow-hidden bg-gray-50">
-      <FileExplorer onOpenLibrary={() => setShowLibrary(true)} />
+      <FileExplorer
+        onOpenLibrary={() => setShowLibrary(true)}
+        onFileSelect={handleFileExplorerInteraction}
+      />
 
       <main className="flex-1 flex flex-col overflow-hidden bg-white">
         {showLibrary ? (

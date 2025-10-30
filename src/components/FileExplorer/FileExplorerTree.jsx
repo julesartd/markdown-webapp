@@ -1,6 +1,6 @@
 import FileTree from '../FileTree/FileTree';
 
-function FileExplorerTree({ dragAndDrop }) {
+function FileExplorerTree({ dragAndDrop, onFileSelect }) {
   const dragHandlers = {
     handleDragStart: dragAndDrop.handleDragStart,
     handleDragEnd: dragAndDrop.handleDragEnd,
@@ -31,6 +31,7 @@ function FileExplorerTree({ dragAndDrop }) {
         dragHandlers={dragHandlers}
         draggedItemId={dragAndDrop.draggedItem?.id}
         dropTargetId={dragAndDrop.dropTarget}
+        onFileSelect={onFileSelect}
       />
     </div>
   );

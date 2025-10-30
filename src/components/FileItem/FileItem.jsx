@@ -28,6 +28,7 @@ function FileItem({
   dragHandlers,
   isDragging,
   isDropTarget,
+  onFileSelect,
 }) {
   const dispatch = useDispatch();
   const currentFolderId = useSelector(selectCurrentFolderId);
@@ -51,6 +52,10 @@ function FileItem({
     }
     if (item.type === 'file') {
       dispatch(setCurrentFile(item.id));
+      // Appeler le callback pour fermer la bibliothèque si nécessaire
+      if (onFileSelect) {
+        onFileSelect();
+      }
     } else {
       dispatch(setCurrentFolder(item.id));
       if (hasChildren && !isExpanded && onToggleExpand) {
