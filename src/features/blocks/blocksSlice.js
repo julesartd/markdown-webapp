@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { v4 as uuidv4 } from "uuid";
-import { saveToLocalStorage, loadFromLocalStorage, STORAGE_KEYS } from "../utils/localStorage";
+import { saveToLocalStorage, loadFromLocalStorage, STORAGE_KEYS } from "../../utils/localStorage.js";
 
 const initialState = loadFromLocalStorage(STORAGE_KEYS.BLOCKS, { items: [] });
 
@@ -21,6 +21,7 @@ const blocksSlice = createSlice({
         if (block) {
             block.name = action.payload.name;
             block.content = action.payload.content;
+            block.shortcut = action.payload.shortcut;
             saveToLocalStorage(STORAGE_KEYS.BLOCKS, state);
         }
     },
