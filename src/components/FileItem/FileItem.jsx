@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { MoreVertical } from 'lucide-react';
+import toast from 'react-hot-toast';
 import {
   removeItem,
   renameItem,
@@ -73,8 +74,30 @@ function FileItem({
   };
 
   const confirmRename = () => {
-    dispatch(renameItem({ id: item.id, name: newName.trim() }));
+    const oldName = item.name;
+    let finalName = newName.trim();
+
+    // Valider et nettoyer le nom
+    // Supprimer les caractères interdits dans les noms de fichiers Windows
+    finalName = finalName.replace(/[<>:"/\\|?*]/g, '');
+
+    // Vérifier que le nom n'est pas vide après nettoyage
+    if (!finalName || finalName === '.md') {
+      toast.error('Le nom du fichier ne peut pas être vide');
+      setNewName(oldName);
+      setIsEditing(false);
+      return;
+    }
+
+    // Pour les fichiers .md, s'assurer que l'extension est présente
+    if (item.type === 'file' && !finalName.endsWith('.md')) {
+      finalName = finalName + '.md';
+    }
+
+    dispatch(renameItem({ id: item.id, name: finalName }));
     setIsEditing(false);
+    setNewName(finalName); // Mettre à jour avec le nom final
+    toast.success(`"${oldName}" renommé en "${finalName}"`);
   };
 
   const handleDelete = () => {
@@ -83,7 +106,10 @@ function FileItem({
   };
 
   const confirmDelete = () => {
+    const itemName = item.name;
+    const itemType = item.type === 'folder' ? 'Dossier' : 'Fichier';
     dispatch(removeItem(item.id));
+    toast.success(`${itemType} "${itemName}" supprimé`);
   };
 
   const handleAddFile = () => {
@@ -92,6 +118,7 @@ function FileItem({
       onToggleExpand();
     }
     setShowMenu(false);
+    toast.success('Nouveau fichier créé');
   };
 
   const handleAddFolder = () => {
@@ -100,6 +127,7 @@ function FileItem({
       onToggleExpand();
     }
     setShowMenu(false);
+    toast.success('Nouveau dossier créé');
   };
 
   // Gestionnaires de drag and drop

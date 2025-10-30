@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { ImagePlus, FileUp, Download } from 'lucide-react';
+import { ImagePlus, FileUp, Download, Check } from 'lucide-react';
+import toast from 'react-hot-toast';
 import { updateFileContent } from '../../features/files/fileSlice';
 import MarkdownPreview from './MarkdownPreview';
 import ImagePicker from '../ImageLibrary/ImagePicker';
@@ -14,19 +15,44 @@ export default function MarkdownEditor({ file, filePath }) {
   const dispatch = useDispatch();
   const [content, setContent] = useState(file.content || '');
   const [showImagePicker, setShowImagePicker] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [lastSaved, setLastSaved] = useState(null);
   const textareaRef = useRef(null);
   const importFileRef = useRef(null);
+  const saveTimeoutRef = useRef(null);
 
   // Mettre à jour le contenu local quand on change de fichier
   useEffect(() => {
     setContent(file.content || '');
+    setLastSaved(null);
   }, [file.id, file.content]);
 
-  // Sauvegarder le contenu dans Redux
+  // Sauvegarder le contenu dans Redux avec debounce
   const handleContentChange = (newContent) => {
     setContent(newContent);
-    dispatch(updateFileContent({ id: file.id, content: newContent }));
+    setIsSaving(true);
+
+    // Clear timeout précédent
+    if (saveTimeoutRef.current) {
+      clearTimeout(saveTimeoutRef.current);
+    }
+
+    // Débounce de 500ms avant de sauvegarder
+    saveTimeoutRef.current = setTimeout(() => {
+      dispatch(updateFileContent({ id: file.id, content: newContent }));
+      setIsSaving(false);
+      setLastSaved(new Date());
+    }, 500);
   };
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
+      }
+    };
+  }, []);
 
   // Insérer une image depuis la bibliothèque
   const handleSelectFromLibrary = (image) => {
@@ -62,7 +88,7 @@ export default function MarkdownEditor({ file, filePath }) {
     if (!uploadedFile) return;
 
     if (!uploadedFile.name.endsWith('.md')) {
-      alert('Veuillez sélectionner un fichier Markdown (.md)');
+      toast.error('Veuillez sélectionner un fichier Markdown (.md)');
       return;
     }
 
@@ -70,9 +96,10 @@ export default function MarkdownEditor({ file, filePath }) {
     reader.onload = (e) => {
       const fileContent = e.target.result;
       handleContentChange(fileContent);
+      toast.success(`Contenu de "${uploadedFile.name}" importé avec succès`);
     };
     reader.onerror = () => {
-      alert('Erreur lors de la lecture du fichier');
+      toast.error('Erreur lors de la lecture du fichier');
     };
     reader.readAsText(uploadedFile);
 
@@ -93,14 +120,27 @@ export default function MarkdownEditor({ file, filePath }) {
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
+    toast.success(`Fichier "${file.name}" exporté avec succès`);
   };
 
   return (
     <div className="flex flex-col h-full">
       {/* Barre d'outils */}
       <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 bg-gray-50">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           <h2 className="text-sm font-semibold text-gray-700">{filePath || file.name}</h2>
+          {/* Indicateur de sauvegarde */}
+          {isSaving ? (
+            <span className="flex items-center gap-1.5 text-xs text-gray-500">
+              <div className="w-2 h-2 bg-yellow-500 rounded-full pulse"></div>
+              Sauvegarde...
+            </span>
+          ) : lastSaved ? (
+            <span className="flex items-center gap-1.5 text-xs text-green-600 fade-in">
+              <Check size={14} />
+              Sauvegardé
+            </span>
+          ) : null}
         </div>
       </div>
 

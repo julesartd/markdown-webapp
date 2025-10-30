@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import toast from 'react-hot-toast';
 import {
   Upload,
   Download,
@@ -61,20 +62,23 @@ export default function ImageLibrary({ onClose }) {
     try {
       const imageObjects = await convertFilesToImages(files);
       dispatch(addImages(imageObjects));
+      toast.success(`${imageObjects.length} image(s) ajoutée(s) avec succès`);
     } catch (error) {
       console.error('Erreur lors de l\'ajout des images:', error);
-      alert('Une erreur est survenue lors de l\'ajout des images.');
+      toast.error('Une erreur est survenue lors de l\'ajout des images.');
     }
   };
 
   // Renommer une image
   const handleRename = (id, name) => {
     dispatch(renameImage({ id, name }));
+    toast.success(`Image renommée en "${name}"`);
   };
 
   // Supprimer une image
   const handleDelete = (id) => {
     dispatch(deleteImages(id));
+    toast.success('Image supprimée');
   };
 
   // Supprimer les images sélectionnées
@@ -84,13 +88,16 @@ export default function ImageLibrary({ onClose }) {
   };
 
   const confirmDeleteSelected = () => {
+    const count = selectedIds.length;
     dispatch(deleteImages(selectedIds));
     dispatch(clearSelection());
+    toast.success(`${count} image(s) supprimée(s)`);
   };
 
   // Exporter une image
   const handleExport = (image) => {
     exportSingleImage(image);
+    toast.success(`Image "${image.name}" exportée`);
   };
 
   // Exporter les images sélectionnées
@@ -99,6 +106,7 @@ export default function ImageLibrary({ onClose }) {
 
     const selectedImages = images.filter((img) => selectedIds.includes(img.id));
     exportMultipleImages(selectedImages, 'bibliotheque');
+    toast.success(`${selectedIds.length} image(s) exportée(s)`);
   };
 
   // Importer des images depuis fichier .mdlc
@@ -109,10 +117,10 @@ export default function ImageLibrary({ onClose }) {
     try {
       const importedImages = await importImageFile(file);
       dispatch(importImages(importedImages));
-      alert(`${importedImages.length} image(s) importée(s) avec succès !`);
+      toast.success(`${importedImages.length} image(s) importée(s) avec succès !`);
     } catch (error) {
       console.error('Erreur lors de l\'import:', error);
-      alert(`Erreur lors de l'import : ${error.message}`);
+      toast.error(`Erreur lors de l'import : ${error.message}`);
     }
 
     // Reset input

@@ -1,5 +1,6 @@
 import { useDispatch } from 'react-redux';
 import { FilePlus, FolderPlus, Images, FileUp } from 'lucide-react';
+import toast from 'react-hot-toast';
 import { addFile, addFolder } from '../../features/files/fileSlice';
 
 function FileExplorerActions({
@@ -19,6 +20,7 @@ function FileExplorerActions({
         parentId: currentFolderId,
       })
     );
+    toast.success('Nouveau fichier créé');
   };
 
   const handleAddFolder = () => {
@@ -28,13 +30,14 @@ function FileExplorerActions({
         parentId: currentFolderId,
       })
     );
+    toast.success('Nouveau dossier créé');
   };
 
   const handleImportFile = (event) => {
     const uploadedFile = event.target.files?.[0];
     if (!uploadedFile) return;
     if (!uploadedFile.name.endsWith('.md')) {
-      alert('Veuillez sélectionner un fichier Markdown (.md)');
+      toast.error('Veuillez sélectionner un fichier Markdown (.md)');
       return;
     }
     const reader = new FileReader();
@@ -46,8 +49,9 @@ function FileExplorerActions({
           parentId: currentFolderId,
         })
       );
+      toast.success(`Fichier "${uploadedFile.name}" importé avec succès`);
     };
-    reader.onerror = () => alert('Erreur lors de la lecture du fichier');
+    reader.onerror = () => toast.error('Erreur lors de la lecture du fichier');
     reader.readAsText(uploadedFile);
     if (importFileRef.current) importFileRef.current.value = '';
   };
