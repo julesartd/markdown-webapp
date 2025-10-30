@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-import { useState, version } from "react";
-=======
 import { useState } from "react";
->>>>>>> 69e75e75cc610d349fbc8c59fafe2ac68a9fe52f
 import { useDispatch } from "react-redux";
 import { updateBlock } from "../blocksSlice";
 import { marked } from "marked";

@@ -75,12 +75,6 @@ function FileExplorer({ onOpenLibrary, onOpenLibraryBlock }) {
     <div className="w-80 h-screen border-r border-gray-300 bg-gray-50 flex flex-col">
       <div className="p-4 border-b border-gray-300 bg-white">
         <h2 className="text-xl font-semibold mb-3">Explorateur</h2>
-        <button
-              onClick={() => navigate('/blocks')}
-              className="w-full mb-3 px-3 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
-              >
-                Ouvrir la bibliothèque de blocs
-        </button>
 
         <div className="space-y-2">
           {/* Section: Créer */}
