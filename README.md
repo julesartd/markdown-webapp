@@ -1,16 +1,65 @@
-# React + Vite
+# Projet Markdown WebApp
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Membres du groupe
 
-Currently, two official plugins are available:
+- Jules
+- Kilian
+- Zakaria
+- Bastien
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Description
 
-## React Compiler
+Cette application web permet de gérer et modifier des fichiers Markdown, d'organiser des dossiers, d'insérer et de prévisualiser des images, de créer et insérer des blocs Markdown réutilisables et d'utiliser une bibliothèque d'images locale. Elle est développée avec **React**, **Redux Toolkit**, **Vite** et **TailwindCSS**.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Installation
 
-## Expanding the ESLint configuration
+1. **Cloner le dépôt :**
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+   ```sh
+   git clone <url-du-repo>
+   cd markdown-webapp
+   ```
+
+2. **Installer les dépendances :**
+
+   ```sh
+   npm install
+   ```
+
+3. **Lancer le serveur de développement :**
+
+   ```sh
+   npm run dev
+   ```
+
+4. **Accéder à l'application :**
+   Ouvrir [http://localhost:5173](http://localhost:5173) dans un navigateur.
+
+## Structure du projet
+
+```
+src/
+  components/       // Composants React (explorateur, éditeur, modals, images...)
+  features/         // Slices Redux pour fichiers et images
+  hooks/            // Hooks personnalisés
+  utils/            // Fonctions utilitaires (localStorage, export, images...)
+  App.jsx           // Composant principal
+  main.jsx          // Point d'entrée
+  store.js          // Store Redux
+public/             // Fichiers statiques
+index.html          // Fichier HTML principal
+```
+
+## Prérequis
+
+- Node.js
+- npm
+
+## Fonctionnalités principales
+
+- Gestion de fichiers et dossiers Markdown
+- Édition et prévisualisation Markdown en temps réel
+- Création et insertion de blocs Markdown réutilisables
+- Insertion d'images depuis une bibliothèque locale
+- Import/export de fichiers et d'images
+- Drag & drop pour l'organisation des fichiers
