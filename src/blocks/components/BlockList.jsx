@@ -1,11 +1,10 @@
 import { useSelector, useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import BlockAdd from "./BlockAdd";
 import BlockEditor from "./BlockEditor";
 import { addBlock, removeBlock } from "../blocksSlice";
+import { ArrowLeft, FolderOpen, Download } from "lucide-react";
 
-function BlockList() {
-  const navigate = useNavigate();
+function BlockList({onClose}) {
   const dispatch = useDispatch();
   const blocks = useSelector((state) => state.blocks.items);
 
@@ -47,32 +46,35 @@ function BlockList() {
     <div className="flex flex-col w-full h-full bg-gradient-to-b from-gray-50 to-gray-100 border-l border-gray-200">
       {/* Header */}
       <header className="p-5 bg-white border-b border-gray-200 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div>
-          <h2 className="text-2xl font-semibold text-gray-800 flex items-center gap-2">
-            📚 <span>Bibliothèque de blocs</span>
-          </h2>
-          <p className="text-sm text-gray-500 mt-1">
-            Gérez vos blocs personnalisés pour vos projets Markdown
-          </p>
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+          <button 
+            className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-800 font-medium" 
+            onClick={onClose}
+          >
+            <ArrowLeft size={16} /> Retour
+          </button>
+          <div>
+            <h2 className="text-2xl font-semibold text-gray-800 flex items-center gap-2">
+              📚 <span>Bibliothèque de blocs</span>
+            </h2>
+            <p className="text-sm text-gray-500 mt-1">
+              Gérez vos blocs personnalisés pour vos projets Markdown
+            </p>
+          </div>
         </div>
 
+
         <div className="flex gap-2 flex-col sm:flex-row w-full sm:w-auto">
-          <button
-            onClick={() => navigate('/')}
-            className="px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg shadow-sm hover:bg-indigo-700 hover:shadow transition"
-          >
-            ← Retour à l’accueil
-          </button>
 
           <button
             onClick={handleExportAllBlocks}
-            className="px-4 py-2 bg-green-600 text-white font-medium rounded-lg shadow-sm hover:bg-green-700 hover:shadow transition"
+            className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-blue-700 bg-blue-50 border border-blue-300 rounded-lg hover:bg-blue-100 transition-colors"
           >
-            ⬇️ Exporter tous les blocs
+            <Download size={16} /> Exporter tous les blocs
           </button>
 
-          <label className="px-4 py-2 bg-yellow-500 text-white font-medium rounded-lg shadow-sm hover:bg-yellow-600 hover:shadow transition cursor-pointer">
-            📂 Importer
+          <label className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-blue-700 bg-blue-50 border border-blue-300 rounded-lg hover:bg-blue-100 transition-colors">
+            <FolderOpen size={16} /> Importer
             <input type="file" accept=".part.mdlc,.parts.mdlc" className="hidden" onChange={handleImport} />
           </label>
         </div>
@@ -115,9 +117,9 @@ function BlockList() {
                     a.click();
                     URL.revokeObjectURL(url);
                   }}
-                  className="mt-3 px-3 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition"
+                  className="flex mt-2 items-center gap-2 px-3 py-2 text-sm font-medium text-blue-700 bg-blue-50 border border-blue-300 rounded-lg hover:bg-blue-100 transition-colors"
                 >
-                  ⬇️ Exporter ce bloc
+                  <Download size={16} /> Exporter ce bloc
                 </button>
               </div>
             ))}

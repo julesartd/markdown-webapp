@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { FilePlus, FolderPlus, Images, FileUp } from 'lucide-react';
+import { FilePlus, FolderPlus, Images, FileUp, BookOpen } from 'lucide-react';
 import {
   addFile,
   addFolder,
@@ -11,10 +11,8 @@ import {
 } from '../../features/files/fileSelector';
 import { selectImageCount } from '../../features/images/imageSelector';
 import FileTree from '../FileTree/FileTree';
-import { useNavigate } from "react-router-dom";
 
-function FileExplorer({ onOpenLibrary }) {
-  const navigate = useNavigate();
+function FileExplorer({ onOpenLibrary, onOpenLibraryBlock }) {
   const dispatch = useDispatch();
   const currentFolderId = useSelector(selectCurrentFolderId);
   const currentFolder = useSelector(selectCurrentFolder);
@@ -77,12 +75,6 @@ function FileExplorer({ onOpenLibrary }) {
     <div className="w-80 h-screen border-r border-gray-300 bg-gray-50 flex flex-col">
       <div className="p-4 border-b border-gray-300 bg-white">
         <h2 className="text-xl font-semibold mb-3">Explorateur</h2>
-        <button
-              onClick={() => navigate('/blocks')}
-              className="w-full mb-3 px-3 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
-              >
-                Ouvrir la bibliothèque de blocs
-        </button>
 
         <div className="space-y-2">
           {/* Section: Créer */}
@@ -149,7 +141,18 @@ function FileExplorer({ onOpenLibrary }) {
             </button>
           </div>
         </div>
-      </div>
+
+          {/* Bibliothèque de blocs */}
+          <button
+            onClick={onOpenLibraryBlock}
+            className="w-full mt-2 px-3 py-2 text-sm border border-indigo-300 bg-indigo-50 text-indigo-700 rounded hover:bg-indigo-100 transition flex items-center justify-center gap-2 font-medium"
+            title="Ouvrir la bibliothèque de blocs"
+          >
+            <BookOpen size={16} />
+            Bibliothèque de blocs
+          </button>
+
+        </div>
 
       {/* Arborescence des fichiers */}
       <FileTree />
