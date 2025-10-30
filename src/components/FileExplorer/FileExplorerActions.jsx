@@ -98,7 +98,7 @@ function FileExplorerActions({
           className="hidden"
         />
       </div>
-      {/* Bibliothèque */}
+      {/* Bibliothèque d'images */}
       <div>
         <p className="text-xs font-semibold text-gray-500 uppercase mb-1.5">
           Ressources
@@ -107,7 +107,7 @@ function FileExplorerActions({
           onClick={onOpenLibrary}
           className="w-full px-3 py-2 text-sm border border-blue-300 bg-blue-50 text-blue-700 rounded hover:bg-blue-100 flex items-center gap-2 font-medium"
         >
-          <Images size={16} /> Bibliothèque{' '}
+          <Images size={16} /> Bibliothèque d'images{' '}
           {imageCount > 0 && `(${imageCount})`}
         </button>
       </div>
