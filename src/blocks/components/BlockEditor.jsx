@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import { useState, version } from "react";
+=======
+import { useState } from "react";
+>>>>>>> 69e75e75cc610d349fbc8c59fafe2ac68a9fe52f
 import { useDispatch } from "react-redux";
 import { updateBlock } from "../blocksSlice";
 import { marked } from "marked";
@@ -18,22 +22,6 @@ function BlockEditor({ block, removeBlock }) {
     dispatch(updateBlock({ id: block.id, name: block.name, content: editedContent }));
     setEditingBlockId(null);
   };
-
-  const handleExportBlock = (block) => {
-    const data = {
-      version: 1,
-      blocks: [block],
-    };
-
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `${block.name || "bloc"}.part.mdlc`;
-    a.click();
-    URL.revokeObjectURL(url);
-  }
 
   return (
     <article className="border rounded-lg bg-white shadow-sm p-4 flex flex-col h-full">
