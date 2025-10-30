@@ -1,5 +1,6 @@
 import { useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { FilePlus, FolderPlus, Images, FileUp, BookOpen } from 'lucide-react';
 import {
   selectCurrentFolderId,
   selectCurrentFolder,
@@ -10,7 +11,7 @@ import FileExplorerHeader from './FileExplorerHeader';
 import FileExplorerActions from './FileExplorerActions';
 import FileExplorerTree from './FileExplorerTree';
 
-function FileExplorer({ onOpenLibrary, onFileSelect }) {
+function FileExplorer({ onOpenLibrary, onOpenLibraryBlock, onFileSelect }) {
   const dispatch = useDispatch();
   const currentFolderId = useSelector(selectCurrentFolderId);
   const currentFolder = useSelector(selectCurrentFolder);
@@ -31,6 +32,7 @@ function FileExplorer({ onOpenLibrary, onFileSelect }) {
         imageCount={imageCount}
         importFileRef={importFileRef}
         onOpenLibrary={onOpenLibrary}
+        onOpenLibraryBlock={onOpenLibraryBlock}
       />
       <FileExplorerTree dragAndDrop={dragAndDrop} onFileSelect={onFileSelect} />
     </div>
