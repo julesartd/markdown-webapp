@@ -76,7 +76,7 @@ export const fileSlice = createSlice({
 
     moveItem: (state, action) => {
       const { itemId, newParentId } = action.payload;
-      const item = state.items.find((i) => i.id === itemId); // CORRECTION: state.items au lieu de state.files
+      const item = state.items.find((i) => i.id === itemId);
 
       if (!item) return;
 
@@ -84,13 +84,12 @@ export const fileSlice = createSlice({
       if (item.type === 'folder') {
         let checkParent = newParentId;
         while (checkParent) {
-          if (checkParent === itemId) return; // Empêcher la boucle
+          if (checkParent === itemId) return;
           const parentItem = state.items.find((i) => i.id === checkParent);
           checkParent = parentItem?.parentId;
         }
       }
 
-      // Mettre à jour le parentId
       item.parentId = newParentId || null;
 
       saveToLocalStorage(STORAGE_KEYS.FILES, state);
@@ -132,6 +131,7 @@ export const {
   moveItem,
   setCurrentFile,
   setCurrentFolder,
+  clearCurrentFolder,
 } = fileSlice.actions;
 
 export default fileSlice.reducer;

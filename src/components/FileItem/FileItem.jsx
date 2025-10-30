@@ -8,6 +8,7 @@ import {
   setCurrentFolder,
   addFile,
   addFolder,
+  clearCurrentFolder,
 } from '../../features/files/fileSlice';
 import {
   selectCurrentFileId,
@@ -41,6 +42,13 @@ function FileItem({
   const isCurrentFile = item.type === 'file' && item.id === currentFileId;
 
   const handleClick = () => {
+    if (
+      item.type === 'file' &&
+      currentFolderId &&
+      item.parentId !== currentFolderId
+    ) {
+      dispatch(setCurrentFolder(null));
+    }
     if (item.type === 'file') {
       dispatch(setCurrentFile(item.id));
     } else {
