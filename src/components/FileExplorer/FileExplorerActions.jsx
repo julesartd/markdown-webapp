@@ -1,5 +1,6 @@
 import { useDispatch } from 'react-redux';
 import { FilePlus, FolderPlus, Images, FileUp, BookOpen } from 'lucide-react';
+import toast from 'react-hot-toast';
 import { addFile, addFolder } from '../../features/files/fileSlice';
 
 function FileExplorerActions({
@@ -20,6 +21,7 @@ function FileExplorerActions({
         parentId: currentFolderId,
       })
     );
+    toast.success('Nouveau fichier créé');
   };
 
   const handleAddFolder = () => {
@@ -29,13 +31,14 @@ function FileExplorerActions({
         parentId: currentFolderId,
       })
     );
+    toast.success('Nouveau dossier créé');
   };
 
   const handleImportFile = (event) => {
     const uploadedFile = event.target.files?.[0];
     if (!uploadedFile) return;
     if (!uploadedFile.name.endsWith('.md')) {
-      alert('Veuillez sélectionner un fichier Markdown (.md)');
+      toast.error('Veuillez sélectionner un fichier Markdown (.md)');
       return;
     }
     const reader = new FileReader();
@@ -47,8 +50,9 @@ function FileExplorerActions({
           parentId: currentFolderId,
         })
       );
+      toast.success(`Fichier "${uploadedFile.name}" importé avec succès`);
     };
-    reader.onerror = () => alert('Erreur lors de la lecture du fichier');
+    reader.onerror = () => toast.error('Erreur lors de la lecture du fichier');
     reader.readAsText(uploadedFile);
     if (importFileRef.current) importFileRef.current.value = '';
   };
@@ -94,7 +98,7 @@ function FileExplorerActions({
           className="hidden"
         />
       </div>
-      {/* Bibliothèque */}
+      {/* Bibliothèque d'images */}
       <div>
         <p className="text-xs font-semibold text-gray-500 uppercase mb-1.5">
           Ressources
@@ -109,14 +113,16 @@ function FileExplorerActions({
       </div>
 
       {/* Bibliothèque de blocs */}
-      <button
-        onClick={onOpenLibraryBlock}
-        className="w-full px-3 py-2 text-sm border border-blue-300 bg-blue-50 text-blue-700 rounded hover:bg-blue-100 flex items-center gap-2 font-medium"
-        title="Ouvrir la bibliothèque de blocs"
-      >
-        <BookOpen size={16} />
-        Bibliothèque de blocs
-      </button>
+      <div>
+        <button
+          onClick={onOpenLibraryBlock}
+          className="w-full px-3 py-2 text-sm border border-blue-300 bg-blue-50 text-blue-700 rounded hover:bg-blue-100 flex items-center gap-2 font-medium"
+          title="Ouvrir la bibliothèque de blocs"
+        >
+          <BookOpen size={16} />
+          Bibliothèque de blocs
+        </button>
+      </div>
     </div>
   );
 }

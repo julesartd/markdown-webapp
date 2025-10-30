@@ -1,5 +1,6 @@
 import { useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import toast from 'react-hot-toast';
 import {
   selectCurrentFolderId,
   selectCurrentFolder,
@@ -10,7 +11,7 @@ import FileExplorerHeader from './FileExplorerHeader';
 import FileExplorerActions from './FileExplorerActions';
 import FileExplorerTree from './FileExplorerTree';
 
-function FileExplorer({ onOpenLibrary, onOpenLibraryBlock, onFileSelect }) {
+function FileExplorer({ onOpenLibrary, onFileSelect, onOpenLibraryBlock }) {
   const dispatch = useDispatch();
   const currentFolderId = useSelector(selectCurrentFolderId);
   const currentFolder = useSelector(selectCurrentFolder);
@@ -19,6 +20,7 @@ function FileExplorer({ onOpenLibrary, onOpenLibraryBlock, onFileSelect }) {
 
   const handleMove = (itemId, newParentId) => {
     dispatch({ type: 'files/moveItem', payload: { itemId, newParentId } });
+    toast.success('Élément déplacé avec succès');
   };
   const dragAndDrop = useDragAndDrop(handleMove);
 
