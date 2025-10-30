@@ -1,7 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom';
 import Layout from './components/Layout';
 import ImageLibrary from './components/ImageLibrary/ImageLibrary';
-import BlockList from './blocks/components/BlockList';
+import BlockList from './components/BlockLibrary/BlockList.jsx';
 import Home from './components/Home';
 
 export const router = createBrowserRouter([

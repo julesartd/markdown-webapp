@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { ImagePlus, FileUp, Download, Check } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { updateFileContent } from '../../features/files/fileSlice';
@@ -13,6 +13,8 @@ import ImagePicker from '../ImageLibrary/ImagePicker';
  */
 export default function MarkdownEditor({ file, filePath }) {
   const dispatch = useDispatch();
+  const blocks = useSelector((state) => state.blocks.items);
+
   const [content, setContent] = useState(file.content || '');
   const [showImagePicker, setShowImagePicker] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -54,32 +56,58 @@ export default function MarkdownEditor({ file, filePath }) {
     };
   }, []);
 
-  // Insérer une image depuis la bibliothèque
-  const handleSelectFromLibrary = (image) => {
-    insertImageIntoEditor(image.id, image.name);
-  };
-
-  // Helper pour insérer l'image dans l'éditeur
-  const insertImageIntoEditor = (imageId, imageName) => {
+  // Helper pour insérer du texte dans l'éditeur
+  const insertTextIntoEditor = (textToInsert) => {
     const textarea = textareaRef.current;
-    const cursorPos = textarea?.selectionStart || content.length;
-    const imageMarkdown = `![${imageName}](${imageId})`;
+    if (!textarea) return;
+
+    const cursorPos = textarea.selectionStart || content.length;
 
     const newContent =
       content.slice(0, cursorPos) +
-      imageMarkdown +
+      textToInsert +
       content.slice(cursorPos);
 
     handleContentChange(newContent);
 
-    // Replacer le curseur après l'image insérée
     setTimeout(() => {
-      if (textarea) {
-        textarea.focus();
-        const newPos = cursorPos + imageMarkdown.length;
-        textarea.setSelectionRange(newPos, newPos);
-      }
+      textarea.focus();
+      const newPos = cursorPos + textToInsert.length;
+      textarea.setSelectionRange(newPos, newPos);
     }, 0);
+  };
+
+  // Insérer une image depuis la bibliothèque
+  const handleSelectFromLibrary = (image) => {
+    const imageMarkdown = `![${image.name}](${image.id})`;
+    insertTextIntoEditor(imageMarkdown);
+  };
+
+  // Gestion des raccourcis clavier pour les blocs
+  const handleKeyDown = (e) => {
+    const key = e.key.toUpperCase();
+    if (['CONTROL', 'ALT', 'SHIFT', 'META', 'DEAD'].includes(key)) return;
+
+    if (!e.ctrlKey && !e.altKey && !e.metaKey) return;
+
+    let parts = [];
+    if (e.ctrlKey) parts.push("Ctrl");
+    if (e.altKey) parts.push("Alt");
+    if (e.metaKey) parts.push("Cmd");
+    if (e.shiftKey) parts.push("Shift");
+
+    parts.push(e.key.length === 1 ? e.key.toUpperCase() : e.key);
+
+    const shortcutString = parts.join("+");
+
+    const matchingBlock = blocks.find(
+      (b) => b.shortcut && b.shortcut.toUpperCase() === shortcutString.toUpperCase()
+    );
+
+    if (matchingBlock) {
+      e.preventDefault();
+      insertTextIntoEditor("\n" + matchingBlock.content);
+    }
   };
 
   // Importer un fichier .md
@@ -103,7 +131,6 @@ export default function MarkdownEditor({ file, filePath }) {
     };
     reader.readAsText(uploadedFile);
 
-    // Reset input
     if (importFileRef.current) {
       importFileRef.current.value = '';
     }
@@ -183,6 +210,7 @@ export default function MarkdownEditor({ file, filePath }) {
               ref={textareaRef}
               value={content}
               onChange={(e) => handleContentChange(e.target.value)}
+              onKeyDown={handleKeyDown}
               className="flex-1 w-full px-4 py-3 resize-none focus:outline-none font-mono text-sm leading-relaxed"
               placeholder="Écrivez votre contenu en Markdown..."
             />
