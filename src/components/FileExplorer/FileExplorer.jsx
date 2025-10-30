@@ -1,6 +1,5 @@
 import { useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { FilePlus, FolderPlus, Images, FileUp, BookOpen } from 'lucide-react';
 import {
   selectCurrentFolderId,
   selectCurrentFolder,
