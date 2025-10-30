@@ -1,11 +1,9 @@
 import { useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { FilePlus, FolderPlus, X, Images, FileUp } from 'lucide-react';
+import { FilePlus, FolderPlus, Images, FileUp } from 'lucide-react';
 import {
   addFile,
   addFolder,
-  setCurrentFolder,
-  updateFileContent,
 } from '../../features/files/fileSlice';
 import {
     selectCurrentFolderId,
@@ -13,8 +11,6 @@ import {
 } from '../../features/files/fileSelector';
 import { selectImageCount } from '../../features/images/imageSelector';
 import FileTree from '../FileTree/FileTree';
-import {useRef} from "react";
-import ImportButton from "../FileActions/ImportButton.jsx";
 
 function FileExplorer({ onOpenLibrary }) {
   const dispatch = useDispatch();
@@ -23,35 +19,25 @@ function FileExplorer({ onOpenLibrary }) {
   const imageCount = useSelector(selectImageCount);
   const importFileRef = useRef(null);
 
-    const handleAddFolder = () => {
-        dispatch(
-            addFolder({
-                name: 'nouveau-dossier',
-                parentId: currentFolderId,
-            })
-        );
-    };
+  const handleAddFile = () => {
+    dispatch(
+      addFile({
+        name: 'nouveau-fichier.md',
+        content: '',
+        parentId: currentFolderId,
+      })
+    );
+  };
 
-    const handleGoToRoot = () => {
-        dispatch(setCurrentFolder(null));
-    };
+  const handleAddFolder = () => {
+    dispatch(
+      addFolder({
+        name: 'nouveau-dossier',
+        parentId: currentFolderId,
+      })
+    );
+  };
 
-    const handleFileImported = ({ name, content }) => {
-        dispatch(
-            addFile({
-                name,
-                content,
-                parentId: currentFolderId,
-            })
-        );
-    };
-
-    return (
-        <div className="w-fit h-screen border-r border-gray-300 bg-gray-50 flex flex-col">
-            <div className="p-4 border-b border-gray-300 bg-white">
-                <h2 className="text-xl font-semibold mb-3">Explorateur</h2>
-
-  // Importer un fichier .md
   const handleImportFile = (event) => {
     const uploadedFile = event.target.files?.[0];
     if (!uploadedFile) return;
@@ -66,13 +52,13 @@ function FileExplorer({ onOpenLibrary }) {
       const fileContent = e.target.result;
       const fileName = uploadedFile.name;
 
-      // Créer un nouveau fichier avec le contenu importé
-      const newFileAction = addFile({
-        name: fileName,
-        content: fileContent,
-        parentId: currentFolderId,
-      });
-      dispatch(newFileAction);
+      dispatch(
+        addFile({
+          name: fileName,
+          content: fileContent,
+          parentId: currentFolderId,
+        })
+      );
     };
     reader.onerror = () => {
       alert('Erreur lors de la lecture du fichier');
@@ -89,41 +75,6 @@ function FileExplorer({ onOpenLibrary }) {
     <div className="w-80 h-screen border-r border-gray-300 bg-gray-50 flex flex-col">
       <div className="p-4 border-b border-gray-300 bg-white">
         <h2 className="text-xl font-semibold mb-3">Explorateur</h2>
-
-                <div className="flex gap-3">
-                    <button
-                        onClick={handleAddFile}
-                        className="flex-1 px-3 py-2 text-sm border border-gray-300 bg-white rounded hover:bg-gray-100 transition flex items-center justify-center gap-2"
-                        title={
-                            currentFolder
-                                ? `Nouveau fichier dans ${currentFolder.name}`
-                                : 'Nouveau fichier à la racine'
-                        }
-                    >
-                        <FilePlus size={16}/>
-                        Fichier
-                    </button>
-                    <button
-                        onClick={handleAddFolder}
-                        className="flex-1 px-3 py-2 text-sm border border-gray-300 bg-white rounded hover:bg-gray-100 transition flex items-center justify-center gap-2"
-                        title={
-                            currentFolder
-                                ? `Nouveau dossier dans ${currentFolder.name}`
-                                : 'Nouveau dossier à la racine'
-                        }
-                    >
-                        <FolderPlus size={16}/>
-                        Dossier
-                    </button>
-                    <ImportButton
-                        onFileImported={handleFileImported}
-                        className="px-3 py-2 text-sm border border-gray-300 bg-white rounded hover:bg-gray-100 transition flex items-center justify-center gap-2"
-                        icon={<Upload size={16} />}
-                        text="Importer"
-                        title="Importer un fichier (.md)"
-                    />
-                </div>
-            </div>
 
         <div className="space-y-2">
           {/* Section: Créer */}
@@ -190,7 +141,12 @@ function FileExplorer({ onOpenLibrary }) {
             </button>
           </div>
         </div>
-    );
+      </div>
+
+      {/* Arborescence des fichiers */}
+      <FileTree />
+    </div>
+  );
 }
 
 export default FileExplorer;
