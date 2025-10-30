@@ -17,6 +17,7 @@ import FileItemIcon from './FileItemIcon';
 import FileItemName from './FileItemName';
 import FileItemMenu from './FileItemMenu';
 import FileItemToggle from './FileItemToggle';
+import ConfirmModal from '../Modal/ConfirmModal';
 
 function FileItem({
   item,
@@ -33,6 +34,8 @@ function FileItem({
   const [isEditing, setIsEditing] = useState(false);
   const [newName, setNewName] = useState(item.name);
   const [showMenu, setShowMenu] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showRenameModal, setShowRenameModal] = useState(false);
 
   const isActiveFolder = item.type === 'folder' && item.id === currentFolderId;
   const isCurrentFile = item.type === 'file' && item.id === currentFileId;
@@ -50,20 +53,24 @@ function FileItem({
 
   const handleRename = () => {
     if (newName.trim() && newName !== item.name) {
-      dispatch(renameItem({ id: item.id, name: newName.trim() }));
+      setShowRenameModal(true);
+    } else {
+      setIsEditing(false);
     }
+  };
+
+  const confirmRename = () => {
+    dispatch(renameItem({ id: item.id, name: newName.trim() }));
     setIsEditing(false);
   };
 
   const handleDelete = () => {
-    const message = hasChildren
-      ? `Supprimer "${item.name}" et tout son contenu ?`
-      : `Supprimer "${item.name}" ?`;
-
-    if (confirm(message)) {
-      dispatch(removeItem(item.id));
-    }
+    setShowDeleteModal(true);
     setShowMenu(false);
+  };
+
+  const confirmDelete = () => {
+    dispatch(removeItem(item.id));
   };
 
   const handleAddFile = () => {
@@ -184,6 +191,38 @@ function FileItem({
           onAddFolder={handleAddFolder}
         />
       </div>
+
+      {/* Modal de confirmation de suppression */}
+      <ConfirmModal
+        isOpen={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        onConfirm={confirmDelete}
+        title="Confirmer la suppression"
+        message={
+          hasChildren
+            ? `Êtes-vous sûr de vouloir supprimer "${item.name}" et tout son contenu ? Cette action est irréversible.`
+            : `Êtes-vous sûr de vouloir supprimer "${item.name}" ? Cette action est irréversible.`
+        }
+        confirmText="Supprimer"
+        cancelText="Annuler"
+        variant="danger"
+      />
+
+      {/* Modal de confirmation de renommage */}
+      <ConfirmModal
+        isOpen={showRenameModal}
+        onClose={() => {
+          setShowRenameModal(false);
+          setNewName(item.name);
+          setIsEditing(false);
+        }}
+        onConfirm={confirmRename}
+        title="Confirmer le renommage"
+        message={`Voulez-vous vraiment renommer "${item.name}" en "${newName}" ?`}
+        confirmText="Renommer"
+        cancelText="Annuler"
+        variant="primary"
+      />
     </div>
   );
 }
