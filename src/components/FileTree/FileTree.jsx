@@ -7,6 +7,7 @@ function FileTree({
   dragHandlers,
   draggedItemId,
   dropTargetId,
+  onFileSelect,
 }) {
   const items = useSelector((state) => selectItemsByParent(state, parentId));
 
@@ -19,6 +20,7 @@ function FileTree({
           dragHandlers={dragHandlers}
           draggedItemId={draggedItemId}
           dropTargetId={dropTargetId}
+          onFileSelect={onFileSelect}
         />
       ))}
     </div>
