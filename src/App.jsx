@@ -4,10 +4,11 @@ import { useSelector } from 'react-redux';
 import FileExplorer from './components/FileExplorer/FileExplorer';
 import MarkdownEditor from './components/MarkdownEditor/MarkdownEditor';
 import ImageLibrary from './components/ImageLibrary/ImageLibrary';
-import { selectCurrentFile } from './features/files/fileSelector';
+import { selectCurrentFile, selectCurrentFilePath } from './features/files/fileSelector';
 
 function App() {
   const currentFile = useSelector(selectCurrentFile);
+  const currentFilePath = useSelector(selectCurrentFilePath);
   const [showLibrary, setShowLibrary] = useState(false);
 
   return (
@@ -18,7 +19,7 @@ function App() {
         {showLibrary ? (
           <ImageLibrary onClose={() => setShowLibrary(false)} />
         ) : currentFile ? (
-          <MarkdownEditor file={currentFile} />
+          <MarkdownEditor file={currentFile} filePath={currentFilePath} />
         ) : (
           <div className="flex-1 flex items-center justify-center text-gray-400">
             <div className="text-center">
