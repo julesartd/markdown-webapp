@@ -60,6 +60,7 @@ index.html          // Fichier HTML principal
 - Gestion de fichiers et dossiers Markdown
 - Édition et prévisualisation Markdown en temps réel
 - Création et insertion de blocs Markdown réutilisables
+- Création de raccourcis clavier personnalisés pour insérer des blocs
 - Insertion d'images depuis une bibliothèque locale
 - Import/export de fichiers et d'images
 - Drag & drop pour l'organisation des fichiers
