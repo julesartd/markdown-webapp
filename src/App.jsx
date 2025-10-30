@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { Routes, Route } from 'react-router-dom';
 import MarkdownEditor from './components/MarkdownEditor/MarkdownEditor';
 import ImageLibrary from './components/ImageLibrary/ImageLibrary';
-import BlockList from './blocks/components/BlockList';
+import BlockList from './components/BlockLibrary/BlockList.jsx';
 import {
   selectCurrentFile,
   selectCurrentFilePath,
