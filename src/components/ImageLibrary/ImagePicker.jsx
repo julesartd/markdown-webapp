@@ -90,7 +90,7 @@ export default function ImagePicker({ isOpen, onClose, onSelect }) {
                 </div>
 
                 {/* Info au bas */}
-                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="absolute bottom-0 left-0 right-0 bg-linear-to-t from-black/70 to-transparent p-2 opacity-0 group-hover:opacity-100 transition-opacity">
                   <p className="text-xs font-medium text-white truncate">{image.name}</p>
                   <p className="text-xs text-gray-300">{formatFileSize(image.size)}</p>
                 </div>
