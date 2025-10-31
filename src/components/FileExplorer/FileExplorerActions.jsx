@@ -1,7 +1,7 @@
 import { useDispatch } from 'react-redux';
-import { FilePlus, FolderPlus, Images, FileUp, BookOpen } from 'lucide-react';
+import { FilePlus, FolderPlus, Images, FileUp, BookOpen, X } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { addFile, addFolder } from '../../features/files/fileSlice';
+import { addFile, addFolder, setCurrentFolder } from '../../features/files/fileSlice';
 
 function FileExplorerActions({
   currentFolder,
@@ -12,6 +12,11 @@ function FileExplorerActions({
   onOpenLibraryBlock,
 }) {
   const dispatch = useDispatch();
+
+  const handleDeselectFolder = () => {
+    dispatch(setCurrentFolder(null));
+    toast.success('Retour à la racine');
+  };
 
   const handleAddFile = () => {
     dispatch(
@@ -59,10 +64,26 @@ function FileExplorerActions({
 
   return (
     <div className="space-y-2 p-4 border-b border-gray-300 bg-white">
+      {/* Indicateur de dossier courant avec bouton de déselection */}
+      {currentFolderId && (
+        <div className="mb-2 flex items-center justify-between px-2 py-1.5 bg-blue-50 border border-blue-200 rounded text-xs">
+          <span className="text-blue-700 font-medium truncate">
+            Dans : {currentFolder?.name}
+          </span>
+          <button
+            onClick={handleDeselectFolder}
+            className="ml-2 p-1 text-blue-600 hover:text-blue-800 hover:bg-blue-100 rounded transition-colors"
+            title="Revenir à la racine"
+          >
+            <X size={14} />
+          </button>
+        </div>
+      )}
+
       {/* Créer */}
       <div>
         <p className="text-xs font-semibold text-gray-500 uppercase mb-1.5">
-          Créer
+          Créer {currentFolderId ? 'ici' : 'à la racine'}
         </p>
         <div className="flex gap-2">
           <button
