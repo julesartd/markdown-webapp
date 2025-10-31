@@ -2,6 +2,7 @@ import './App.css';
 import { useSelector } from 'react-redux';
 import { Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
+import { FileText, FolderPlus, FilePlus } from 'lucide-react';
 import MarkdownEditor from './components/MarkdownEditor/MarkdownEditor';
 import ImageLibrary from './components/ImageLibrary/ImageLibrary';
 import BlockList from './components/BlockLibrary/BlockList.jsx';
@@ -72,26 +73,54 @@ function App() {
               currentFile ? (
                 <MarkdownEditor file={currentFile} filePath={currentFilePath} />
               ) : (
-                <div className="flex-1 flex items-center justify-center text-gray-400">
-                  <div className="text-center">
-                    <svg
-                      className="mx-auto h-12 w-12 text-gray-300 mb-4"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={1.5}
-                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                      />
-                    </svg>
-                    <h2 className="text-lg font-medium text-gray-500 mb-2">
-                      Aucun fichier sélectionné
-                    </h2>
-                    <p className="text-sm text-gray-400">
-                      Sélectionnez ou créez un fichier pour commencer
+                <div className="flex-1 flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
+                  <div className="text-center max-w-md px-6">
+                    {/* Icône principale */}
+                    <div className="mb-6 relative">
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="w-24 h-24 bg-blue-100 rounded-full blur-xl opacity-60"></div>
+                      </div>
+                      <FileText className="mx-auto h-24 w-24 text-blue-500 relative" strokeWidth={1.5} />
+                    </div>
+
+                    {/* Titre et description */}
+                    <h1 className="text-3xl font-bold text-gray-800 mb-3">
+                      Bienvenue dans Markdown Editor
+                    </h1>
+                    <p className="text-base text-gray-600 mb-8">
+                      Aucun fichier sélectionné. Commencez par créer ou sélectionner un fichier Markdown.
+                    </p>
+
+                    {/* Actions rapides */}
+                    <div className="space-y-3">
+                      <div className="flex items-start gap-3 text-left p-4 bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+                        <FilePlus className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                        <div>
+                          <h3 className="text-sm font-semibold text-gray-800 mb-1">
+                            Créer un fichier
+                          </h3>
+                          <p className="text-xs text-gray-600">
+                            Utilisez le bouton "Fichier" dans la barre latérale pour créer un nouveau fichier Markdown
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-start gap-3 text-left p-4 bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+                        <FolderPlus className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                        <div>
+                          <h3 className="text-sm font-semibold text-gray-800 mb-1">
+                            Organiser avec des dossiers
+                          </h3>
+                          <p className="text-xs text-gray-600">
+                            Créez des dossiers pour organiser vos fichiers et projets
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Note */}
+                    <p className="mt-8 text-xs text-gray-500">
+                      Vos fichiers sont sauvegardés automatiquement dans votre navigateur
                     </p>
                   </div>
                 </div>
