@@ -25,7 +25,7 @@ function FileExplorer({ onOpenLibrary, onFileSelect, onOpenLibraryBlock }) {
   const dragAndDrop = useDragAndDrop(handleMove);
 
   return (
-    <div className="w-80 h-screen border-r border-gray-300 bg-gray-50 flex flex-col">
+    <div className="w-80 h-screen border-r border-gray-200 bg-white flex flex-col shadow-sm">
       <FileExplorerHeader />
       <FileExplorerActions
         currentFolder={currentFolder}

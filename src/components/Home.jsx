@@ -13,7 +13,7 @@ export default function Home() {
   return currentFile ? (
     <MarkdownEditor file={currentFile} filePath={currentFilePath} />
   ) : (
-    <div className="flex-1 flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="flex-1 flex items-center justify-center bg-linear-to-br from-gray-50 to-gray-100">
       <div className="text-center max-w-md px-6">
         {/* Icône principale */}
         <div className="mb-6 relative">
@@ -34,7 +34,7 @@ export default function Home() {
         {/* Actions rapides */}
         <div className="space-y-3">
           <div className="flex items-start gap-3 text-left p-4 bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
-            <FilePlus className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
+            <FilePlus className="h-5 w-5 text-blue-600 mt-0.5 shrink-0" />
             <div>
               <h3 className="text-sm font-semibold text-gray-800 mb-1">
                 Créer un fichier
@@ -46,7 +46,7 @@ export default function Home() {
           </div>
 
           <div className="flex items-start gap-3 text-left p-4 bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
-            <FolderPlus className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+            <FolderPlus className="h-5 w-5 text-green-600 mt-0.5 shrink-0" />
             <div>
               <h3 className="text-sm font-semibold text-gray-800 mb-1">
                 Organiser avec des dossiers

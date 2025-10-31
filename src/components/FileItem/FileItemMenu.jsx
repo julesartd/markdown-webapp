@@ -15,7 +15,7 @@ function FileItemMenu({
   return (
     <>
       <div className="fixed inset-0 z-10" onClick={onClose} />
-      <div className="absolute right-0 top-full mt-1 bg-white border border-gray-300 rounded shadow-lg z-20 min-w-[160px]">
+      <div className="absolute right-0 top-full mt-1 bg-white border border-gray-300 rounded shadow-lg z-20 min-w-40">
         <button
           onClick={onRename}
           className="w-full px-4 py-2 text-left text-sm hover:bg-gray-100 flex items-center gap-2"
